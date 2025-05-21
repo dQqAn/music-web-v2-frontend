@@ -4,3 +4,38 @@
     padding: 12px 24px;
     border-radius: 6px;
 }
+
+.wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .justifyContent{
+    justify-content: space-between;
+    display: flex;
+  }
+
+  .footerStart {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .footerCenter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+  }
+
+
+  .footerEnd {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    gap: 16px;
+  }

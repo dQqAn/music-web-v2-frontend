@@ -6,15 +6,33 @@ import styles from './Navbar.module.css'
 
 export default function Navbar() {
   const router = useRouter()
-  const handleClick = () => {
-    router.push('/dashboard')
+  const handleClick = (path: string) => {
+    router.push(path)
   }
 
   return (
     <nav className={styles.nav}>
-      <div>
-        <CustomButton text="Dashboard" onClickAction={handleClick} />
-      </div>
-    </nav>
+  <div className={styles.wrapper}>
+    <div>
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search sound..."
+      />
+      <div id="searchResults"></div>
+    </div>
+
+    <div>
+      
+    <CustomButton text="Homepage" onClickAction={() => handleClick('/')} />
+    </div>
+
+    <div>
+      <CustomButton text="Dashboard" onClickAction={() => handleClick('/dashboard')} />
+    </div>
+
+    <div id="user_section"></div>
+  </div>
+</nav>
   );
 }
