@@ -2,18 +2,10 @@
 
 import { useEffect } from 'react'
 import styles from "./page.module.css";
+import { useDropdownToggle } from './menu/useDropdownToggle'
 
 export default function Home() {
-  useEffect(() => {
-    const toggle = document.getElementById("toggleInstruments")
-    const dropdown = document.getElementById("instrumentDropdown")
-
-    if (toggle && dropdown) {
-      toggle.addEventListener("click", () => {
-        dropdown.style.display = dropdown.style.display === "none" ? "block" : "none"
-      })
-    }
-  }, [])
+  useDropdownToggle('toggleInstruments', 'instrumentDropdown')
 
   return (
     <div className={styles.page}>
