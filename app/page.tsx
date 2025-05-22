@@ -1,11 +1,24 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import styles from "./page.module.css";
 import { useDropdownToggle } from './menu/useDropdownToggle'
+import { fetchSounds } from '../public/scripts/fetchSounds';
+import { Sound } from '@/public/types/sound';
 
 export default function Home() {
   useDropdownToggle('toggleInstruments', 'instrumentDropdown')
+
+  const [sounds, setSounds] = useState<Sound[]>([])
+  const [totalCount, setTotalCount] = useState(0)
+  useEffect(() => {
+    fetchSounds()
+      .then(({ sounds, length }) => {
+        setSounds(sounds)
+        setTotalCount(length)
+      })
+      .catch(console.error)
+  }, [])
 
   return (
     <div className={styles.page}>
