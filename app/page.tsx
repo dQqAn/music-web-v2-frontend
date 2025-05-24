@@ -3,28 +3,37 @@
 import { useEffect, useState } from 'react'
 import styles from "./page.module.css";
 import { useDropdownToggle } from './menu/useDropdownToggle'
-import { fetchSounds } from '../public/scripts/fetchSounds';
+import { useUIInteractions, filterSounds } from '../public/scripts/ts/menu/menu';
 import { Sound } from '@/public/types/sound';
+import { audioPlayer, waveformPlayer } from '@/public/scripts/ts/audio_player/audio_player';
+import { auth } from '@/public/scripts/ts/index/auth';
 
 export default function Home() {
-  useDropdownToggle('toggleInstruments', 'instrumentDropdown')
-
-  const [sounds, setSounds] = useState<Sound[]>([])
-  const [totalCount, setTotalCount] = useState(0)
+  //useDropdownToggle('toggleInstruments', 'instrumentDropdown')
+  useUIInteractions()
   useEffect(() => {
-    fetchSounds()
-      .then(({ sounds, length }) => {
-        setSounds(sounds)
-        setTotalCount(length)
-      })
-      .catch(console.error)
-  }, [])
+    filterSounds(1)
+  }, []);
+  waveformPlayer()
+  auth()
+  audioPlayer()
+
+  /* const [sounds, setSounds] = useState<Sound[]>([])
+   const [totalCount, setTotalCount] = useState(0)
+   useEffect(() => {
+     fetchSounds()
+       .then(({ sounds, length }) => {
+         setSounds(sounds)
+         setTotalCount(length)
+       })
+       .catch(console.error)
+   }, [])*/
 
   return (
     <div className={styles.page}>
       <main className={styles.main}>
 
-        <div style={{ display: 'flex', flex: 1, width: '100%' }}>
+        <div style={{ display: 'flex', width: '100%' }}>
           <div id="menuWrapper" className={styles.menuWrapper}>
             <div className={styles.section}>
               <div style={{ marginBottom: 16 }}>
@@ -45,7 +54,7 @@ export default function Home() {
             <div id="menuContainer" className={`${styles.section} ${styles.menuContainer}`}>
               <div id="selectedItemsContainer" className={styles.selectedItemsContainer}></div>
 
-              <div id="categoryBackButtonContainer" className={styles.backButtonContainer} style={{ display: 'none' }}>
+              <div id="categoryBackButtonContainer" className={styles.backButtonContainer}>
                 <button id="categoryBackButton" style={{ fontSize: '0.875rem' }}>← Back</button>
               </div>
 
@@ -80,7 +89,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div style={{ flex: 1, display: 'flex', width: '100%' }}>
+          <div style={{ width: '100%' }}>
             <div style={{ width: '100%' }}>
               <button id="toggleInstruments" className={styles.toggleInstruments} style={{ display: 'block', margin: '0 auto' }}>
                 Instruments
@@ -91,7 +100,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div style={{ flex: 1, width: '100%' }} id="soundList"></div>
+            <div style={{ width: '100%' }} id="soundList"></div>
 
             <div id="pagination" className={styles.pagination}></div>
           </div>

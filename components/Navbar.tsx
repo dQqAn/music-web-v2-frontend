@@ -27,10 +27,6 @@ export default function Navbar() {
     <CustomButton text="Homepage" onClickAction={() => handleClick('/')} />
     </div>
 
-    <div>
-      <CustomButton text="Dashboard" onClickAction={() => handleClick('/dashboard')} />
-    </div>
-
     <div id="user_section"></div>
   </div>
 </nav>
