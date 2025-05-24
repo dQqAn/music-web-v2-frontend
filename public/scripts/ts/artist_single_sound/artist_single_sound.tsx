@@ -73,7 +73,8 @@ document.getElementById("uploadForm")?.addEventListener("submit", async (event) 
 
         const response = await fetch("http://localhost:8083/artist/upload_sound", {
             method: "POST",
-            body: formData
+            body: formData,
+            credentials: 'include'
         });
         const data = await response.json();
         if (response.status === 200) {
@@ -198,7 +199,9 @@ export function artistSingleSound(){
     
                     if (!text) return;
     
-                    const response = await fetch(`http://localhost:8083/searchArtist?query=${encodeURIComponent(text)}`);
+                    const response = await fetch(`http://localhost:8083/searchArtist?query=${encodeURIComponent(text)}`,{
+                        credentials: 'include'
+                    });
     
                     if (!response.ok) {
                         artistSearchResults.innerHTML = "<p style='color: red;'>Error while searching.</p>";

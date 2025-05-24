@@ -14,6 +14,7 @@ function getSounds(page: number) {
             headers: {
                 'Accept': 'application/json'
             },
+            credentials: 'include'
         }).then(response => {
             if (!response.ok) {
                 console.log(`HTTP error! Status: ${response.status}`);
@@ -120,7 +121,8 @@ document.getElementById('submitButton')?.addEventListener('click', async () => {
                 const response = await fetch('http://localhost:8083/database/moderatorSounds', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ soundIDs: selectedSoundIds })
+                    body: JSON.stringify({ soundIDs: selectedSoundIds }),
+                    credentials: 'include'
                 });
 
                 if (!response.ok) {

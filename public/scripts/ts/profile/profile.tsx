@@ -51,7 +51,8 @@ function loadFavourites(userID: string, containerID: string, page = 1) {
         fetch(`http://localhost:8083/loadFavourites/${userID}?page=${page}`, {
             headers: {
                 'Accept': 'application/json'
-            }
+            },
+            credentials: 'include'
         }).then(response => {
             if (!response.ok) {
                 console.log(`HTTP error! Status: ${response.status}`);
@@ -85,6 +86,7 @@ async function loadPlaylists(containerID: string) {
             headers: {
                 'Accept': 'application/json'
             },
+            credentials: 'include'
         });
 
         if (!response.ok) {

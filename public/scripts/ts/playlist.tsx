@@ -31,7 +31,9 @@ async function showPlaylists(playlistResult: string, id = "") {
             playlistDiv.innerHTML = ``;
 
             const handleShowPlaylists = async () => {
-                const response = await fetch(`http://localhost:8083/database/user_playlist?soundID=${soundID}`);
+                const response = await fetch(`http://localhost:8083/database/user_playlist?soundID=${soundID}`, {
+                    credentials: 'include'
+                });
                 if (!response.ok) {
                     return;
                 }
@@ -101,10 +103,10 @@ async function handlePlaylistInput(event: Event, id = "", playlistResult: string
             if (currentPlaylistFetchController) {
                 currentPlaylistFetchController.abort();
             }
-        
+
             currentPlaylistFetchController = new AbortController();
             const signal = currentPlaylistFetchController.signal;
-        
+
             if (query.length < 1) {
                 await showPlaylists(playlistResult, id)
                 return;
@@ -118,32 +120,35 @@ async function handlePlaylistInput(event: Event, id = "", playlistResult: string
             try {
                 playlistDiv.innerHTML = ``;
                 const response = await fetch(`http://localhost:8083/database/search_user_playlist?query=${encodeURIComponent(query)}&soundID=${soundID}`,
-                    { signal });
+                    {
+                        signal,
+                        credentials: "include"
+                    });
                 if (!response.ok) {
                     playlistDiv.innerHTML = "<p style='color: red;'>Error while searching.</p>";
                     return;
                 }
-        
+
                 const results = await response.json();
                 if (results.length === 0) {
                     playlistDiv.innerHTML = "<p>No results found.</p>";
                     return;
                 }
-        
+
                 results.forEach((item: any) => {
                     const input = document.createElement("input");
                     input.type = "checkbox";
                     input.id = "playlist-checkbox-" + item.playlist.playlistID
-        
+
                     const label = document.createElement("label");
                     label.htmlFor = input.id;
                     label.textContent = item.playlist.name;
-        
+
                     input.checked = item.soundStatus;
                     if (item.soundStatus && !selected.includes(item.playlist.playlistID)) {
                         basicSelected.push(item.playlist.playlistID)
                     }
-        
+
                     const container = document.createElement("div");
                     container.appendChild(input);
                     container.appendChild(label);
@@ -157,9 +162,9 @@ async function handlePlaylistInput(event: Event, id = "", playlistResult: string
         }
 
         handleInput();
-    },[])
+    }, [])
 
-    
+
 }
 
 async function addSound(soundIDs: string[], playlistResult: string, id = "") {
@@ -175,7 +180,8 @@ async function addSound(soundIDs: string[], playlistResult: string, id = "") {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ soundIDs: soundIDs, selected: cleanedSelected, unselected: cleanedUnselected })
+            body: JSON.stringify({ soundIDs: soundIDs, selected: cleanedSelected, unselected: cleanedUnselected }),
+            credentials: 'include'
         });
         if (!response.ok) {
             return;
@@ -215,7 +221,8 @@ async function createPlaylist(playlistInput: string, playlistResult: string, id 
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"
         },
-        body: `name=${encodeURIComponent(value)}`
+        body: `name=${encodeURIComponent(value)}`,
+        credentials: 'include'
     });
 
     const statusCode = response.status;
