@@ -89,15 +89,14 @@ export function createStemsContent(soundID: string) {
 
 async function stemsContent(stemsOverlayContent: any, stems: any, soundID: string, stemsListWaveSurfers: any, singleStemsListWaveSurfers: any, muteStemsListWaveSurfers: any) {
     const sound = await getSound(soundID);
-    useEffect(() => {
-        let mainStemWaveReady = false;
+    let mainStemWaveReady = false;
 
-        const mainStemItem = document.createElement('div');
-        mainStemItem.style.display = 'flex';
-        mainStemItem.style.width = '100%';
+    const mainStemItem = document.createElement('div');
+    mainStemItem.style.display = 'flex';
+    mainStemItem.style.width = '100%';
 
-        const mainInfos = document.createElement('div')
-        mainInfos.innerHTML = `
+    const mainInfos = document.createElement('div')
+    mainInfos.innerHTML = `
                     <div>
                         <div>
                             <img id="stemSoundImage_${soundID}" src=""
@@ -116,85 +115,134 @@ async function stemsContent(stemsOverlayContent: any, stems: any, soundID: strin
                     </div>
                     `;
 
-        mainStemItem.appendChild(mainInfos)
-        stemsOverlayContent.appendChild(mainStemItem)
+    mainStemItem.appendChild(mainInfos)
+    stemsOverlayContent.appendChild(mainStemItem)
 
-        if (sound) {
-            setSoundInfos(sound, `stemSoundImage_${soundID}`, `stemSoundName_${soundID}`, `stemSoundArtistNames_${soundID}`)
+    if (sound) {
+        setSoundInfos(sound, `stemSoundImage_${soundID}`, `stemSoundName_${soundID}`, `stemSoundArtistNames_${soundID}`)
+    }
+
+    const mainStemWaveSurferDiv = document.createElement('div');
+    mainStemWaveSurferDiv.style.border = "1px solid #ddd";
+    mainStemWaveSurferDiv.style.width = '100%';
+
+    mainStemItem.appendChild(mainStemWaveSurferDiv)
+    stemsOverlayContent.appendChild(mainStemItem)
+
+    const mainStemWaveSurfer = WaveSurfer.create({
+        container: mainStemWaveSurferDiv,
+        waveColor: 'rgb(200, 0, 200)',
+        progressColor: 'rgb(100, 0, 100)',
+        url: '',
+        height: 50,
+    })
+    window.addEventListener('beforeunload', () => {
+        if (mainStemWaveSurfer) {
+            mainStemWaveSurfer.destroy()
         }
+    });
 
-        const mainStemWaveSurferDiv = document.createElement('div');
-        mainStemWaveSurferDiv.style.border = "1px solid #ddd";
-        mainStemWaveSurferDiv.style.width = '100%';
+    mainStemWaveSurfer.setMuted(true);
+    stemsListWaveSurfers[soundID] = mainStemWaveSurfer
 
-        mainStemItem.appendChild(mainStemWaveSurferDiv)
-        stemsOverlayContent.appendChild(mainStemItem)
+    const src = `http://localhost:8083/stream/sound/${encodeURIComponent(soundID)}`;
+    if (src) {
+        mainStemWaveSurfer.load(src)
+    }
 
-        const mainStemWaveSurfer = WaveSurfer.create({
-            container: mainStemWaveSurferDiv,
+    const mainStemPlayButton = document.createElement('button')
+    mainStemPlayButton.textContent = "Play"
+
+    const mainControllerDiv = document.createElement('div')
+
+    mainControllerDiv.appendChild(mainStemPlayButton)
+
+    mainStemItem.appendChild(mainControllerDiv)
+    stemsOverlayContent.appendChild(mainStemItem)
+
+    mainStemWaveSurfer.on('decode', (duration) => {
+        mainStemWaveReady = false
+    })
+
+    mainStemWaveSurfer.once('ready', () => {
+        mainStemWaveReady = true
+        mainStemPlayButton.onclick = () => {
+            const mainStemItem = stemsListWaveSurfers[soundID];
+            mainStemItem.playPause()
+
+            const hasSingleSelected = Object.keys(singleStemsListWaveSurfers).length > 0;
+
+            for (const key in stemsListWaveSurfers) {
+                const stemItem = stemsListWaveSurfers[key];
+
+                if (stemItem === mainStemItem) continue;
+
+                stemItem.setMuted(true)
+
+                if (hasSingleSelected) {
+                    if (singleStemsListWaveSurfers[key]) {
+                        stemItem.setMuted(false);
+                    }
+                } else {
+                    if (!muteStemsListWaveSurfers[key]) {
+                        stemItem.setMuted(false);
+                    }
+                }
+
+                stemItem.playPause();
+            }
+        }
+    })
+    mainStemWaveSurferDiv.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLElement;
+        const bbox = target.getBoundingClientRect();
+        const x = e.clientX - bbox.left;
+        const percent = x / bbox.width;
+
+        const duration = mainStemWaveSurfer.getDuration();
+        if (duration && !isNaN(percent)) {
+            for (const key in stemsListWaveSurfers) {
+                if (stemsListWaveSurfers[soundID] !== stemsListWaveSurfers[key]) {
+                    stemsListWaveSurfers[key].seekTo(percent);
+                }
+            }
+        }
+    });
+
+    stems.forEach((stem: any) => {
+        let listStemWaveReady = false;
+
+        const listItem = document.createElement('div');
+
+        const waveSurferDiv = document.createElement('div');
+        waveSurferDiv.id = 'div_' + stem.stemID
+        waveSurferDiv.style.border = "1px solid #ddd";
+        waveSurferDiv.style.width = '100%';
+
+        listItem.appendChild(waveSurferDiv)
+        stemsOverlayContent.appendChild(listItem)
+
+        const stemWaveSurfer = WaveSurfer.create({
+            container: waveSurferDiv,
             waveColor: 'rgb(200, 0, 200)',
             progressColor: 'rgb(100, 0, 100)',
             url: '',
             height: 50,
         })
         window.addEventListener('beforeunload', () => {
-            if (mainStemWaveSurfer) {
-                mainStemWaveSurfer.destroy()
+            if (stemWaveSurfer) {
+                stemWaveSurfer.destroy()
             }
         });
+        stemsListWaveSurfers[stem.stemID] = stemWaveSurfer
 
-        mainStemWaveSurfer.setMuted(true);
-        stemsListWaveSurfers[soundID] = mainStemWaveSurfer
-
-        const src = `http://localhost:8083/stream/sound/${encodeURIComponent(soundID)}`;
-        if (src) {
-            mainStemWaveSurfer.load(src)
-        }
-
-        const mainStemPlayButton = document.createElement('button')
-        mainStemPlayButton.textContent = "Play"
-
-        const mainControllerDiv = document.createElement('div')
-
-        mainControllerDiv.appendChild(mainStemPlayButton)
-
-        mainStemItem.appendChild(mainControllerDiv)
-        stemsOverlayContent.appendChild(mainStemItem)
-
-        mainStemWaveSurfer.on('decode', (duration) => {
-            mainStemWaveReady = false
+        stemWaveSurfer.on('decode', (duration) => {
+            listStemWaveReady = false
         })
-
-        mainStemWaveSurfer.once('ready', () => {
-            mainStemWaveReady = true
-            mainStemPlayButton.onclick = () => {
-                const mainStemItem = stemsListWaveSurfers[soundID];
-                mainStemItem.playPause()
-
-                const hasSingleSelected = Object.keys(singleStemsListWaveSurfers).length > 0;
-
-                for (const key in stemsListWaveSurfers) {
-                    const stemItem = stemsListWaveSurfers[key];
-
-                    if (stemItem === mainStemItem) continue;
-
-                    stemItem.setMuted(true)
-
-                    if (hasSingleSelected) {
-                        if (singleStemsListWaveSurfers[key]) {
-                            stemItem.setMuted(false);
-                        }
-                    } else {
-                        if (!muteStemsListWaveSurfers[key]) {
-                            stemItem.setMuted(false);
-                        }
-                    }
-
-                    stemItem.playPause();
-                }
-            }
+        stemWaveSurfer.once('ready', () => {
+            listStemWaveReady = true
         })
-        mainStemWaveSurferDiv.addEventListener('click', (e) => {
+        waveSurferDiv.addEventListener('click', (e) => {
             const target = e.currentTarget as HTMLElement;
             const bbox = target.getBoundingClientRect();
             const x = e.clientX - bbox.left;
@@ -203,179 +251,129 @@ async function stemsContent(stemsOverlayContent: any, stems: any, soundID: strin
             const duration = mainStemWaveSurfer.getDuration();
             if (duration && !isNaN(percent)) {
                 for (const key in stemsListWaveSurfers) {
-                    if (stemsListWaveSurfers[soundID] !== stemsListWaveSurfers[key]) {
+                    if (stemsListWaveSurfers[stem.stemID] !== stemsListWaveSurfers[key]) {
                         stemsListWaveSurfers[key].seekTo(percent);
                     }
                 }
             }
         });
 
-        stems.forEach((stem: any) => {
-            let listStemWaveReady = false;
+        const src = `http://localhost:8083/stream/sound/${encodeURIComponent(soundID)}?stems=true&stemPath=${stem.stemPath}`;
+        if (src) {
+            stemWaveSurfer.load(src)
+        }
+        stemWaveSurfer.getWrapper().className = "stem_waveSurfer_" + soundID
 
-            const listItem = document.createElement('div');
+        const downloadButton = document.createElement('button')
+        downloadButton.textContent = "D"
+        downloadButton.onclick = function () {
+            downloadSound(soundID, true, stem.stemPath);
+        };
 
-            const waveSurferDiv = document.createElement('div');
-            waveSurferDiv.id = 'div_' + stem.stemID
-            waveSurferDiv.style.border = "1px solid #ddd";
-            waveSurferDiv.style.width = '100%';
-
-            listItem.appendChild(waveSurferDiv)
-            stemsOverlayContent.appendChild(listItem)
-
-            const stemWaveSurfer = WaveSurfer.create({
-                container: waveSurferDiv,
-                waveColor: 'rgb(200, 0, 200)',
-                progressColor: 'rgb(100, 0, 100)',
-                url: '',
-                height: 50,
-            })
-            window.addEventListener('beforeunload', () => {
-                if (stemWaveSurfer) {
-                    stemWaveSurfer.destroy()
-                }
-            });
-            stemsListWaveSurfers[stem.stemID] = stemWaveSurfer
-
-            stemWaveSurfer.on('decode', (duration) => {
-                listStemWaveReady = false
-            })
-            stemWaveSurfer.once('ready', () => {
-                listStemWaveReady = true
-            })
-            waveSurferDiv.addEventListener('click', (e) => {
-                const target = e.currentTarget as HTMLElement;
-                const bbox = target.getBoundingClientRect();
-                const x = e.clientX - bbox.left;
-                const percent = x / bbox.width;
-
-                const duration = mainStemWaveSurfer.getDuration();
-                if (duration && !isNaN(percent)) {
-                    for (const key in stemsListWaveSurfers) {
-                        if (stemsListWaveSurfers[stem.stemID] !== stemsListWaveSurfers[key]) {
-                            stemsListWaveSurfers[key].seekTo(percent);
-                        }
-                    }
-                }
-            });
-
-            const src = `http://localhost:8083/stream/sound/${encodeURIComponent(soundID)}?stems=true&stemPath=${stem.stemPath}`;
-            if (src) {
-                stemWaveSurfer.load(src)
+        const singleCheckbox = document.createElement('input');
+        singleCheckbox.type = 'checkbox';
+        const singleLabel = document.createElement('label');
+        singleLabel.textContent = 'S';
+        singleLabel.appendChild(singleCheckbox);
+        singleCheckbox.addEventListener('change', function () {
+            if (singleCheckbox.checked) {
+                muteCheckbox.checked = false
+                delete muteStemsListWaveSurfers[stem.stemID]
+                singleStemsListWaveSurfers[stem.stemID] = stemWaveSurfer
+            } else {
+                delete singleStemsListWaveSurfers[stem.stemID]
             }
-            stemWaveSurfer.getWrapper().className = "stem_waveSurfer_" + soundID
 
-            const downloadButton = document.createElement('button')
-            downloadButton.textContent = "D"
-            downloadButton.onclick = function () {
-                downloadSound(soundID, true, stem.stemPath);
-            };
+            const basicWaveSurfers: any = Object.fromEntries(
+                Object.entries(stemsListWaveSurfers).filter(([key]) => key !== soundID)
+            )
+            for (const key in basicWaveSurfers) {
+                basicWaveSurfers[key].setMuted(true)
+                const myDiv = document.getElementById('div_' + key) as HTMLElement;
+                myDiv.style.backgroundColor = 'black';
+                myDiv.style.opacity = '0.6';
+            }
 
-            const singleCheckbox = document.createElement('input');
-            singleCheckbox.type = 'checkbox';
-            const singleLabel = document.createElement('label');
-            singleLabel.textContent = 'S';
-            singleLabel.appendChild(singleCheckbox);
-            singleCheckbox.addEventListener('change', function () {
-                if (singleCheckbox.checked) {
-                    muteCheckbox.checked = false
-                    delete muteStemsListWaveSurfers[stem.stemID]
-                    singleStemsListWaveSurfers[stem.stemID] = stemWaveSurfer
-                } else {
-                    delete singleStemsListWaveSurfers[stem.stemID]
-                }
-
-                const basicWaveSurfers: any = Object.fromEntries(
-                    Object.entries(stemsListWaveSurfers).filter(([key]) => key !== soundID)
+            let newWaveSurfers: any = {}
+            if (Object.keys(singleStemsListWaveSurfers).length > 0) {
+                newWaveSurfers = Object.fromEntries(
+                    Object.entries(basicWaveSurfers).filter(([key]) => {
+                        return key in singleStemsListWaveSurfers
+                    })
                 )
-                for (const key in basicWaveSurfers) {
-                    basicWaveSurfers[key].setMuted(true)
-                    const myDiv = document.getElementById('div_' + key) as HTMLElement;
-                    myDiv.style.backgroundColor = 'black';
-                    myDiv.style.opacity = '0.6';
-                }
-
-                let newWaveSurfers: any = {}
-                if (Object.keys(singleStemsListWaveSurfers).length > 0) {
-                    newWaveSurfers = Object.fromEntries(
-                        Object.entries(basicWaveSurfers).filter(([key]) => {
-                            return key in singleStemsListWaveSurfers
-                        })
-                    )
-                } else {
-                    newWaveSurfers = Object.fromEntries(
-                        Object.entries(basicWaveSurfers).filter(([key]) => {
-                            return !(key in muteStemsListWaveSurfers)
-                        })
-                    )
-                }
-                for (const key in newWaveSurfers) {
-                    newWaveSurfers[key].setMuted(false)
-                    const myDiv = document.getElementById('div_' + key) as HTMLElement;
-                    myDiv.style.backgroundColor = 'transparent';
-                    myDiv.style.opacity = '1';
-                }
-            });
-
-            const muteCheckbox = document.createElement('input');
-            muteCheckbox.type = 'checkbox';
-            const muteLabel = document.createElement('label');
-            muteLabel.textContent = 'M';
-            muteLabel.appendChild(muteCheckbox);
-            muteCheckbox.addEventListener('change', function () {
-                if (muteCheckbox.checked) {
-                    singleCheckbox.checked = false
-                    delete singleStemsListWaveSurfers[stem.stemID]
-                    muteStemsListWaveSurfers[stem.stemID] = stemWaveSurfer
-                } else {
-                    delete muteStemsListWaveSurfers[stem.stemID]
-                }
-
-                const basicWaveSurfers: any = Object.fromEntries(
-                    Object.entries(stemsListWaveSurfers).filter(([key]) => key !== soundID)
+            } else {
+                newWaveSurfers = Object.fromEntries(
+                    Object.entries(basicWaveSurfers).filter(([key]) => {
+                        return !(key in muteStemsListWaveSurfers)
+                    })
                 )
-                for (const key in basicWaveSurfers) {
-                    basicWaveSurfers[key].setMuted(true)
-                    const myDiv = document.getElementById('div_' + key) as HTMLElement;
-                    myDiv.style.backgroundColor = 'black';
-                    myDiv.style.opacity = '0.6';
-                }
+            }
+            for (const key in newWaveSurfers) {
+                newWaveSurfers[key].setMuted(false)
+                const myDiv = document.getElementById('div_' + key) as HTMLElement;
+                myDiv.style.backgroundColor = 'transparent';
+                myDiv.style.opacity = '1';
+            }
+        });
 
-                let newWaveSurfers: any = {}
-                if (Object.keys(singleStemsListWaveSurfers).length > 0) {
-                    newWaveSurfers = Object.fromEntries(
-                        Object.entries(basicWaveSurfers).filter(([key]) => {
-                            return key in singleStemsListWaveSurfers
-                        })
-                    )
-                } else {
-                    newWaveSurfers = Object.fromEntries(
-                        Object.entries(basicWaveSurfers).filter(([key]) => {
-                            return !(key in muteStemsListWaveSurfers)
-                        })
-                    )
-                }
-                for (const key in newWaveSurfers) {
-                    newWaveSurfers[key].setMuted(false)
-                    const myDiv = document.getElementById('div_' + key) as HTMLElement;
-                    myDiv.style.backgroundColor = 'transparent';
-                    myDiv.style.opacity = '1';
-                }
-            });
+        const muteCheckbox = document.createElement('input');
+        muteCheckbox.type = 'checkbox';
+        const muteLabel = document.createElement('label');
+        muteLabel.textContent = 'M';
+        muteLabel.appendChild(muteCheckbox);
+        muteCheckbox.addEventListener('change', function () {
+            if (muteCheckbox.checked) {
+                singleCheckbox.checked = false
+                delete singleStemsListWaveSurfers[stem.stemID]
+                muteStemsListWaveSurfers[stem.stemID] = stemWaveSurfer
+            } else {
+                delete muteStemsListWaveSurfers[stem.stemID]
+            }
 
-            const infos = document.createElement('div')
-            infos.innerHTML = `
+            const basicWaveSurfers: any = Object.fromEntries(
+                Object.entries(stemsListWaveSurfers).filter(([key]) => key !== soundID)
+            )
+            for (const key in basicWaveSurfers) {
+                basicWaveSurfers[key].setMuted(true)
+                const myDiv = document.getElementById('div_' + key) as HTMLElement;
+                myDiv.style.backgroundColor = 'black';
+                myDiv.style.opacity = '0.6';
+            }
+
+            let newWaveSurfers: any = {}
+            if (Object.keys(singleStemsListWaveSurfers).length > 0) {
+                newWaveSurfers = Object.fromEntries(
+                    Object.entries(basicWaveSurfers).filter(([key]) => {
+                        return key in singleStemsListWaveSurfers
+                    })
+                )
+            } else {
+                newWaveSurfers = Object.fromEntries(
+                    Object.entries(basicWaveSurfers).filter(([key]) => {
+                        return !(key in muteStemsListWaveSurfers)
+                    })
+                )
+            }
+            for (const key in newWaveSurfers) {
+                newWaveSurfers[key].setMuted(false)
+                const myDiv = document.getElementById('div_' + key) as HTMLElement;
+                myDiv.style.backgroundColor = 'transparent';
+                myDiv.style.opacity = '1';
+            }
+        });
+
+        const infos = document.createElement('div')
+        infos.innerHTML = `
                     <p>${stem.name}</p>
                 `;
 
-            const controllerDiv = document.createElement('div')
-            controllerDiv.appendChild(infos)
-            controllerDiv.appendChild(downloadButton)
-            controllerDiv.appendChild(muteLabel)
-            controllerDiv.appendChild(singleLabel)
+        const controllerDiv = document.createElement('div')
+        controllerDiv.appendChild(infos)
+        controllerDiv.appendChild(downloadButton)
+        controllerDiv.appendChild(muteLabel)
+        controllerDiv.appendChild(singleLabel)
 
-            listItem.appendChild(controllerDiv)
-            stemsOverlayContent.appendChild(listItem)
-        })
-    }, [])
+        listItem.appendChild(controllerDiv)
+        stemsOverlayContent.appendChild(listItem)
+    })
 }
