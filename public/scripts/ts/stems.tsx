@@ -10,8 +10,21 @@ export function createStemsContent(soundID: string) {
 
     const stemsOverlay = document.createElement("div");
     stemsOverlay.id = "stemsOverlay";
+    stemsOverlay.style.display = 'none';
+    stemsOverlay.style.position = 'fixed';
+    stemsOverlay.style.zIndex = '50';
 
     const modal = document.createElement("div");
+    modal.style.position = 'fixed';
+    modal.style.zIndex = '50';
+    Object.assign(modal.style, {
+        top: "50%",
+        left: "50%",
+        width: "24rem",
+        transform: "translate(-50%, -50%)",
+        backgroundColor: "white",
+        padding: "2rem",
+    });
 
     const closeStems = document.createElement("button");
     closeStems.id = "closeStemsOverlay";
@@ -80,6 +93,8 @@ async function stemsContent(stemsOverlayContent: any, stems: any, soundID: strin
         let mainStemWaveReady = false;
 
         const mainStemItem = document.createElement('div');
+        mainStemItem.style.display = 'flex';
+        mainStemItem.style.width = '100%';
 
         const mainInfos = document.createElement('div')
         mainInfos.innerHTML = `
@@ -90,12 +105,12 @@ async function stemsContent(stemsOverlayContent: any, stems: any, soundID: strin
                         </div>
                     </div>
     
-                    <div >
+                    <div style="width: 100%;">
                         <h5>Name: </h5>
                         <div id="stemSoundName_${soundID}"></div>
                     </div>
     
-                    <div >
+                    <div style="width: 100%;">
                         <h5>Artists: </h5>
                         <div id="stemSoundArtistNames_${soundID}"></div>
                     </div>
@@ -110,6 +125,7 @@ async function stemsContent(stemsOverlayContent: any, stems: any, soundID: strin
 
         const mainStemWaveSurferDiv = document.createElement('div');
         mainStemWaveSurferDiv.style.border = "1px solid #ddd";
+        mainStemWaveSurferDiv.style.width = '100%';
 
         mainStemItem.appendChild(mainStemWaveSurferDiv)
         stemsOverlayContent.appendChild(mainStemItem)
@@ -202,6 +218,7 @@ async function stemsContent(stemsOverlayContent: any, stems: any, soundID: strin
             const waveSurferDiv = document.createElement('div');
             waveSurferDiv.id = 'div_' + stem.stemID
             waveSurferDiv.style.border = "1px solid #ddd";
+            waveSurferDiv.style.width = '100%';
 
             listItem.appendChild(waveSurferDiv)
             stemsOverlayContent.appendChild(listItem)
