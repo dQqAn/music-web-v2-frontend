@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import type { Sound, SoundListWithSize } from '../../../types/sound'
 import { updatePagination } from '../pagination';
 import { soundList } from '../soundList';
+import { fetchSounds, SoundList } from '../../newSoundList';
 
 export function useUIInteractions() {
   useEffect(() => {
@@ -72,34 +73,6 @@ interface CategoryItem {
   name: string;
   source: string;
 }
-
-/*export async function fetchSounds(): Promise<SoundListWithSize> {
-  const page = 1
-  const res = await fetch(`http://localhost:8083/database/filterSounds?page=${page}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      categorySelectedTags: ["JAZZ"],
-      instrumentSelectedTags: [],
-      minDuration: null,
-      maxDuration: null,
-      bpm: null,
-      artistID: null
-    }),
-    credentials: "include"
-  })
-
-  if (!res.ok) {
-    throw new Error('Failed to fetch sounds')
-  }
-
-  const data: SoundListWithSize = await res.json()
-  //console.log(data.length)
-  //console.log(data.sounds)
-  return data
-}*/
 
 function dropDownMenu(page = 1, toggleBtnID: string, dropdownID: string, listID: string, dataName: string) {
   fetch(`http://localhost:8083/allMetaData?page=${page}`)
@@ -184,18 +157,18 @@ function loadMenuItems(clearButtonName: string, rootItems: any[], items: any[], 
     });
 }
 
-let isBpmChanged = false;
-let isDurationChanged = false;
+export let isBpmChanged = false;
+export let isDurationChanged = false;
 const minSliderValue = 0
 const maxSliderValue = 600
 
 let categoryMenuData: CategoryItem[] = [];
-let categorySelectedItems = new Set<CategoryItem>();
+export let categorySelectedItems = new Set<CategoryItem>();
 let categoryNavigationStack: any[] = [];
 let categoryCurrentItems: any[] = [];
 let categoryRootItems: any[] = [];
 
-function parseTimeRange(rangeStr: string) {
+export function parseTimeRange(rangeStr: string) {
   const [minStr, maxStr] = rangeStr.split("-");
 
   function toSeconds(timeStr: string) {
@@ -306,83 +279,83 @@ function deleteItemByTag(tag: string, selectedItems: Set<{ tag: string }>) {
 
 export function filterSounds(page: number, categoryTag: string | null = null, artistID: string | null = null, source: string | null = null) {
   let minDuration = null
-    let maxDuration = null
-    if (isDurationChanged) {
-      const output = document.getElementById('durationOutput');
-      if (output && output.textContent) {
-        const outputResult = parseTimeRange(output.textContent);
-        minDuration = outputResult.minSeconds;
-        maxDuration = outputResult.maxSeconds;
-      }
+  let maxDuration = null
+  if (isDurationChanged) {
+    const output = document.getElementById('durationOutput');
+    if (output && output.textContent) {
+      const outputResult = parseTimeRange(output.textContent);
+      minDuration = outputResult.minSeconds;
+      maxDuration = outputResult.maxSeconds;
+    }
+  }
+
+  let bpm = null
+  if (isBpmChanged) {
+    const output = document.getElementById('bpmOutput');
+    if (output && output.textContent) {
+      bpm = parseInt(output.textContent, 10);
+    }
+  }
+
+  const excludedTags = ['duration', 'bpm'];
+
+  let instrumentSelectedTags: string[] = []
+  instrumentSelectedTags = [...categorySelectedItems]
+    .filter((item: { tag: string, source: string }) => !excludedTags.includes(item.tag) && item.source === 'instrument')
+    .map((item: { tag: string }) => item.tag);
+
+  let categorySelectedTags: string[] = []
+  categorySelectedTags = [...categorySelectedItems]
+    .filter(item => !excludedTags.includes(item.tag) && item.source === 'category')
+    .map(item => item.tag);
+
+  if (categoryTag) {
+    if (source === 'instrument') {
+      instrumentSelectedTags.push(categoryTag)
+    } else {
+      categorySelectedTags.push(categoryTag)
+    }
+  }
+
+  fetch(`http://localhost:8083/database/filterSounds?page=${page}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      categorySelectedTags: categorySelectedTags,
+      instrumentSelectedTags: instrumentSelectedTags,
+      minDuration: minDuration,
+      maxDuration: maxDuration,
+      bpm: bpm,
+      artistID: artistID
+    })
+  }).then(response => {
+    if (!response.ok) {
+      console.log(`HTTP error! Status: ${response.status}`);
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    return response.json();
+  }).then(async data => {
+    const sounds = data.sounds || [];
+    const length = data.length || 0
+
+    try {
+      await soundList('soundList', sounds)
+    } catch (error) {
+      console.error('soundList Error:', error);
+      throw error;
     }
 
-    let bpm = null
-    if (isBpmChanged) {
-      const output = document.getElementById('bpmOutput');
-      if (output && output.textContent) {
-        bpm = parseInt(output.textContent, 10);
-      }
-    }
+    window.history.pushState({ page: page }, `Page ${page}`, `?page=${page}`);
 
-    const excludedTags = ['duration', 'bpm'];
-
-    let instrumentSelectedTags: string[] = []
-    instrumentSelectedTags = [...categorySelectedItems]
-      .filter((item: { tag: string, source: string }) => !excludedTags.includes(item.tag) && item.source === 'instrument')
-      .map((item: { tag: string }) => item.tag);
-
-    let categorySelectedTags: string[] = []
-    categorySelectedTags = [...categorySelectedItems]
-      .filter(item => !excludedTags.includes(item.tag) && item.source === 'category')
-      .map(item => item.tag);
-
-    if (categoryTag) {
-      if (source === 'instrument') {
-        instrumentSelectedTags.push(categoryTag)
-      } else {
-        categorySelectedTags.push(categoryTag)
-      }
-    }
-
-    fetch(`http://localhost:8083/database/filterSounds?page=${page}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        categorySelectedTags: categorySelectedTags,
-        instrumentSelectedTags: instrumentSelectedTags,
-        minDuration: minDuration,
-        maxDuration: maxDuration,
-        bpm: bpm,
-        artistID: artistID
-      })
-    }).then(response => {
-      if (!response.ok) {
-        console.log(`HTTP error! Status: ${response.status}`);
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return response.json();
-    }).then(async data => {
-      const sounds = data.sounds || [];
-      const length = data.length || 0
-
-      try {
-        await soundList('soundList', sounds)
-      } catch (error) {
-        console.error('soundList Error:', error);
-        throw error;
-      }
-
-      window.history.pushState({ page: page }, `Page ${page}`, `?page=${page}`);
-
-      const totalPages = Math.floor((length + 10 - 1) / 10);
-      updatePagination("pagination", page, totalPages, (p: number) => {
-        filterSounds(p);
-      });
-    }).catch(error => {
-      console.error("Error:", error);
+    const totalPages = Math.floor((length + 10 - 1) / 10);
+    updatePagination("pagination", page, totalPages, (p: number) => {
+      filterSounds(p);
     });
+  }).catch(error => {
+    console.error("Error:", error);
+  });
 }
 
 function handleClearButton(clearButtonName: string, navigationStack: any[], metaDataName: string, currentItems: any[], rootItems: any[], dataName: string, backButtonID: string, menuContainerID: string, selectedItems: Set<any>, selectedItemsContainer: string, listTypeName: string) {
@@ -604,6 +577,7 @@ function openCloseButtons(menuWrapperID: string) {
 function menuSubmit(menuSubmitBtnID: string) {
   const submitButton = document.getElementById(menuSubmitBtnID);
   submitButton?.addEventListener('click', async function () {
-    filterSounds(1)
+    //filterSounds(1)
+    window.dispatchEvent(new Event('refreshSounds'))
   });
 }

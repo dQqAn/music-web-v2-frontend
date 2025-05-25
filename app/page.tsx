@@ -7,27 +7,16 @@ import { useUIInteractions, filterSounds } from '../public/scripts/ts/menu/menu'
 import { Sound } from '@/public/types/sound';
 import { audioPlayer, waveformPlayer } from '@/public/scripts/ts/audio_player/audio_player';
 import { auth } from '@/public/scripts/ts/index/auth';
+import { SoundList } from '@/public/scripts/newSoundList';
 
 export default function Home() {
-  //useDropdownToggle('toggleInstruments', 'instrumentDropdown')
   useUIInteractions()
-  useEffect(() => {
+  /*useEffect(() => {
     filterSounds(1)
-  }, []);
+  }, []);*/
   waveformPlayer()
   auth()
   audioPlayer()
-
-  /* const [sounds, setSounds] = useState<Sound[]>([])
-   const [totalCount, setTotalCount] = useState(0)
-   useEffect(() => {
-     fetchSounds()
-       .then(({ sounds, length }) => {
-         setSounds(sounds)
-         setTotalCount(length)
-       })
-       .catch(console.error)
-   }, [])*/
 
   return (
     <div className={styles.page}>
@@ -100,7 +89,9 @@ export default function Home() {
               </div>
             </div>
 
-            <div style={{ width: '100%' }} id="soundList"></div>
+            <div style={{ width: '100%' }} id="soundList">
+              <SoundList />
+            </div>
 
             <div id="pagination" className={styles.pagination}></div>
           </div>
