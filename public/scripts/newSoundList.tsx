@@ -202,26 +202,28 @@ export function SoundCard({ sound }: { sound: Sound }) {
 
     return (
         <div style={{ border: '1px solid gray', padding: '10px', marginBottom: '10px' }}>
-            <CustomButton
-                text="Play"
-                onClickAction={() => {
-                    onClickRef.current?.()
-                }}
-            >
-                <i data-lucide="play" className={`icon_${sound.soundID}`}>Play</i>
-            </CustomButton>
-            <h3>{sound.name}</h3>
-            <p>Durum: {sound.status}</p>
-            <div style={{ display: 'flex', gap: '10px' }}>
-                <p id={`time_${sound.soundID}`}>0:00</p>
-                <p id={`duration_${sound.soundID}`}>0:00</p>
+            <div style={{ display: 'flex', gap: '20px' }}>
+                <CustomButton
+                    text="Play"
+                    onClickAction={() => {
+                        onClickRef.current?.()
+                    }}
+                >
+                    <i data-lucide="play" className={`icon_${sound.soundID}`}>Play</i>
+                </CustomButton>
+                <h3>{sound.name}</h3>
+                <p>Durum: {sound.status}</p>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <p id={`time_${sound.soundID}`}>0:00</p>
+                    <p id={`duration_${sound.soundID}`}>0:00</p>
+                </div>
+                <p>Kategoriler: {sound.categories.join(', ')}</p>
+                <p>Modlar: {sound.moods.join(', ')}</p>
+                <p>Enstrümanlar: {sound.instruments.join(', ')}</p>
+                <p>Süre: {sound.duration} saniye</p>
+                <p>BPM: {sound.bpm ?? 'Bilinmiyor'}</p>
+                <p>Sanatçılar: {sound.artistInfos.map((a) => a.name).join(', ')}</p>
             </div>
-            <p>Kategoriler: {sound.categories.join(', ')}</p>
-            <p>Modlar: {sound.moods.join(', ')}</p>
-            <p>Enstrümanlar: {sound.instruments.join(', ')}</p>
-            <p>Süre: {sound.duration} saniye</p>
-            <p>BPM: {sound.bpm ?? 'Bilinmiyor'}</p>
-            <p>Sanatçılar: {sound.artistInfos.map((a) => a.name).join(', ')}</p>
             <div id={`div_${sound.soundID}`} ref={waveContainerRef}></div>
         </div>
     )
