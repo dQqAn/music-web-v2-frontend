@@ -146,9 +146,7 @@ async function stemsContent(stemsOverlayContent: any, stems: any, soundID: strin
     stemsListWaveSurfers[soundID] = mainStemWaveSurfer
 
     const src = `http://localhost:8083/stream/sound/${encodeURIComponent(soundID)}`;
-    if (src) {
-        mainStemWaveSurfer.load(src)
-    }
+    mainStemWaveSurfer.load(src)
 
     const mainStemPlayButton = document.createElement('button')
     mainStemPlayButton.textContent = "Play"
@@ -259,9 +257,7 @@ async function stemsContent(stemsOverlayContent: any, stems: any, soundID: strin
         });
 
         const src = `http://localhost:8083/stream/sound/${encodeURIComponent(soundID)}?stems=true&stemPath=${stem.stemPath}`;
-        if (src) {
-            stemWaveSurfer.load(src)
-        }
+        stemWaveSurfer.load(src)
         stemWaveSurfer.getWrapper().className = "stem_waveSurfer_" + soundID
 
         const downloadButton = document.createElement('button')

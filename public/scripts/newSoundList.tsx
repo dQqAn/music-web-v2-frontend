@@ -125,10 +125,8 @@ export function SoundCard({ sound }: { sound: Sound }) {
 
         setTimeout(() => {
             const src = `http://localhost:8083/stream/sound/${encodeURIComponent(sound.soundID)}`;
-            if (src) {
-                listWaveSurfer.load(src)
-                listWaveSurfer.getWrapper().className = "waveSurfer_" + sound.soundID
-            }
+            listWaveSurfer.load(src)
+            listWaveSurfer.getWrapper().className = "waveSurfer_" + sound.soundID
         }, 1000);
 
         waveContainerRef.current.addEventListener('click', (e) => {
@@ -170,26 +168,23 @@ export function SoundCard({ sound }: { sound: Sound }) {
                     });
 
                     const src = `http://localhost:8083/stream/sound/${encodeURIComponent(sound.soundID)}`;
-                    if (src) {
+                    mainWaveSurfer?.load(src)
+                    const wrapper = mainWaveSurfer?.getWrapper()
 
-                        mainWaveSurfer?.load(src)
-                        const wrapper = mainWaveSurfer?.getWrapper()
-
-                        if (wrapper) {
-                            wrapper.className = "main_waveSurfer_" + sound.soundID
-                        }
-
-                        const listIcon = document.querySelector('.icon_' + sound.soundID);
-                        listIcon?.setAttribute('data-lucide', 'pause');
-
-                        mainWaveSurfer?.once('ready', () => {
-                            const rateInput = document.getElementById('mainRateInput') as HTMLInputElement;
-                            if (rateInput) {
-                                mainWaveSurfer?.setPlaybackRate(rateInput.valueAsNumber);
-                            }
-                            mainWaveSurfer?.play()
-                        })
+                    if (wrapper) {
+                        wrapper.className = "main_waveSurfer_" + sound.soundID
                     }
+
+                    const listIcon = document.querySelector('.icon_' + sound.soundID);
+                    listIcon?.setAttribute('data-lucide', 'pause');
+
+                    mainWaveSurfer?.once('ready', () => {
+                        const rateInput = document.getElementById('mainRateInput') as HTMLInputElement;
+                        if (rateInput) {
+                            mainWaveSurfer?.setPlaybackRate(rateInput.valueAsNumber);
+                        }
+                        mainWaveSurfer?.play()
+                    })
                 } else {
                     mainWaveSurfer?.pause()
                     const listIcon = document.querySelector('.icon_' + sound.soundID);

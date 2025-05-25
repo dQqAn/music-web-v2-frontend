@@ -133,7 +133,7 @@ export function audioPlayer() {
             } else {
                 setTimeout(() => {
                     const src = `http://localhost:8083/stream/sound/${encodeURIComponent(soundID)}`;
-                    if (src && mainWaveSurfer?.getWrapper().className) {
+                    if (mainWaveSurfer?.getWrapper().className) {
                         mainWaveSurfer?.load(src);
 
                         const wrapper = mainWaveSurfer?.getWrapper()
@@ -257,25 +257,23 @@ export function audioPlayer() {
                 const localSoundID = getStoredSoundIDs()[0]
                 if (localSoundID) {
                     const src = `http://localhost:8083/stream/sound/${encodeURIComponent(localSoundID)}`;
-                    if (src) {
-                        mainWaveSurfer?.load(src)
-                        const wrapper = mainWaveSurfer?.getWrapper()
-                        if (wrapper) {
-                            wrapper.className = "main_waveSurfer_" + localSoundID
-                        }
-
-                        const listIcon = document.querySelector('.icon_' + localSoundID);
-                        if (listIcon) {
-                            listIcon.setAttribute('data-lucide', 'pause');
-                        }
-
-                        mainWaveSurfer?.once('ready', () => {
-                            if (rateInput) {
-                                mainWaveSurfer?.setPlaybackRate(rateInput.valueAsNumber);
-                            }
-                            mainWaveSurfer?.play()
-                        })
+                    mainWaveSurfer?.load(src)
+                    const wrapper = mainWaveSurfer?.getWrapper()
+                    if (wrapper) {
+                        wrapper.className = "main_waveSurfer_" + localSoundID
                     }
+
+                    const listIcon = document.querySelector('.icon_' + localSoundID);
+                    if (listIcon) {
+                        listIcon.setAttribute('data-lucide', 'pause');
+                    }
+
+                    mainWaveSurfer?.once('ready', () => {
+                        if (rateInput) {
+                            mainWaveSurfer?.setPlaybackRate(rateInput.valueAsNumber);
+                        }
+                        mainWaveSurfer?.play()
+                    })
                 }
             }
         });
@@ -328,17 +326,15 @@ export function audioPlayer() {
                         replaceSoundIDsWith(targetID);
 
                         const src = `http://localhost:8083/stream/sound/${encodeURIComponent(targetID)}`;
-                        if (src) {
-                            mainWaveSurfer?.load(src)
+                        mainWaveSurfer?.load(src)
 
-                            const wrapper = mainWaveSurfer?.getWrapper()
-                            if (wrapper) {
-                                wrapper.className = "main_waveSurfer_" + targetID
-                            }
-                            mainWaveSurfer?.once('ready', () => {
-                                mainWaveSurfer?.play();
-                            })
+                        const wrapper = mainWaveSurfer?.getWrapper()
+                        if (wrapper) {
+                            wrapper.className = "main_waveSurfer_" + targetID
                         }
+                        mainWaveSurfer?.once('ready', () => {
+                            mainWaveSurfer?.play();
+                        })
                     }
                 }
             };
@@ -353,17 +349,15 @@ export function audioPlayer() {
                         replaceSoundIDsWith(nextID);
 
                         const src = `http://localhost:8083/stream/sound/${encodeURIComponent(nextID)}`;
-                        if (src) {
-                            mainWaveSurfer?.load(src)
+                        mainWaveSurfer?.load(src)
 
-                            const wrapper = mainWaveSurfer?.getWrapper()
-                            if (wrapper) {
-                                wrapper.className = "main_waveSurfer_" + nextID
-                            }
-                            mainWaveSurfer?.once('ready', () => {
-                                mainWaveSurfer?.play();
-                            })
+                        const wrapper = mainWaveSurfer?.getWrapper()
+                        if (wrapper) {
+                            wrapper.className = "main_waveSurfer_" + nextID
                         }
+                        mainWaveSurfer?.once('ready', () => {
+                            mainWaveSurfer?.play();
+                        })
                     }
                 }
             };
@@ -590,55 +584,53 @@ async function createPlaylistContent(playlistOverlayContent: HTMLElement, soundI
             });
 
             const src = `http://localhost:8083/stream/sound/${encodeURIComponent(soundID)}`;
-            if (src) {
-                if (currentSrc === src) {
-                    if (mainWaveSurfer?.isPlaying()) {
-                        const icon = document.querySelector('.playlist_icon_' + soundID);
-                        if (icon) {
-                            icon.setAttribute('data-lucide', 'play');
-                            mainWaveSurfer.pause();
-                            return;
-                        }
+            if (currentSrc === src) {
+                if (mainWaveSurfer?.isPlaying()) {
+                    const icon = document.querySelector('.playlist_icon_' + soundID);
+                    if (icon) {
+                        icon.setAttribute('data-lucide', 'play');
+                        mainWaveSurfer.pause();
+                        return;
                     }
-                    if (currentSrc === src) {
-                        const icon = document.querySelector('.playlist_icon_' + soundID);
-                        if (icon) {
-                            icon.setAttribute('data-lucide', 'pause');
-                            mainWaveSurfer?.play();
-                            return;
-                        }
-                    }
-
-                    mainWaveSurfer?.load(src);
-                    const wrapper = mainWaveSurfer?.getWrapper()
-                    if (wrapper) {
-                        wrapper.className = "main_waveSurfer_" + soundID
-                    }
-                    mainWaveSurfer?.once('ready', () => {
-                        mainWaveSurfer?.stop();
-                        const icon = document.querySelector('.playlist_icon_' + soundID);
-                        if (icon) {
-                            icon.setAttribute('data-lucide', 'pause');
-                            mainWaveSurfer?.play();
-                            currentSrc = src;
-                        }
-                    });
-                } else {
-                    mainWaveSurfer?.load(src);
-                    const wrapper = mainWaveSurfer?.getWrapper()
-                    if (wrapper) {
-                        wrapper.className = "main_waveSurfer_" + soundID
-                    }
-                    mainWaveSurfer?.once('ready', () => {
-                        mainWaveSurfer?.stop();
-                        const icon = document.querySelector('.playlist_icon_' + soundID);
-                        if (icon) {
-                            icon.setAttribute('data-lucide', 'pause');
-                            mainWaveSurfer?.play();
-                            currentSrc = src;
-                        }
-                    });
                 }
+                if (currentSrc === src) {
+                    const icon = document.querySelector('.playlist_icon_' + soundID);
+                    if (icon) {
+                        icon.setAttribute('data-lucide', 'pause');
+                        mainWaveSurfer?.play();
+                        return;
+                    }
+                }
+
+                mainWaveSurfer?.load(src);
+                const wrapper = mainWaveSurfer?.getWrapper()
+                if (wrapper) {
+                    wrapper.className = "main_waveSurfer_" + soundID
+                }
+                mainWaveSurfer?.once('ready', () => {
+                    mainWaveSurfer?.stop();
+                    const icon = document.querySelector('.playlist_icon_' + soundID);
+                    if (icon) {
+                        icon.setAttribute('data-lucide', 'pause');
+                        mainWaveSurfer?.play();
+                        currentSrc = src;
+                    }
+                });
+            } else {
+                mainWaveSurfer?.load(src);
+                const wrapper = mainWaveSurfer?.getWrapper()
+                if (wrapper) {
+                    wrapper.className = "main_waveSurfer_" + soundID
+                }
+                mainWaveSurfer?.once('ready', () => {
+                    mainWaveSurfer?.stop();
+                    const icon = document.querySelector('.playlist_icon_' + soundID);
+                    if (icon) {
+                        icon.setAttribute('data-lucide', 'pause');
+                        mainWaveSurfer?.play();
+                        currentSrc = src;
+                    }
+                });
             }
         };
     }

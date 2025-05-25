@@ -49,18 +49,16 @@ export function soundPage() {
                                 return;
                             }
 
-                            if (src) {
-                                mainWaveSurfer?.load(src);
-                                const wrapper = mainWaveSurfer?.getWrapper()
-                                if (wrapper) {
-                                    wrapper.className = "main_waveSurfer_" + soundID
-                                }
-                                mainWaveSurfer?.once('ready', () => {
-                                    mainWaveSurfer?.stop();
-                                    mainWaveSurfer?.play();
-                                    currentSrc = src;
-                                });
+                            mainWaveSurfer?.load(src);
+                            const wrapper = mainWaveSurfer?.getWrapper()
+                            if (wrapper) {
+                                wrapper.className = "main_waveSurfer_" + soundID
                             }
+                            mainWaveSurfer?.once('ready', () => {
+                                mainWaveSurfer?.stop();
+                                mainWaveSurfer?.play();
+                                currentSrc = src;
+                            });
                         };
                     }
                 }
