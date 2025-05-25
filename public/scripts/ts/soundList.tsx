@@ -52,7 +52,7 @@ export function getTempStoredSoundIDs() {
     return data ? JSON.parse(data) : [];
 }
 
-function addTempSoundID(id: string) {
+export function addTempSoundID(id: string) {
     const ids = getTempStoredSoundIDs();
     if (!ids.includes(id)) {
         ids.push(id);
@@ -66,7 +66,7 @@ function removeTempSoundID(id: string) {
     localStorage.setItem(TEMP_SOUND_IDS_KEY, JSON.stringify(ids));
 }
 
-function clearTempAllSoundIDs() {
+export function clearTempAllSoundIDs() {
     localStorage.removeItem(TEMP_SOUND_IDS_KEY);
 }
 
