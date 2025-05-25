@@ -91,7 +91,9 @@ function dropDownMenu(page = 1, toggleBtnID: string, dropdownID: string, listID:
 
         if (toggleBtn && dropdown) {
           toggleBtn.addEventListener('click', () => {
-            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+            //const isHidden = dropdown.style.display === 'none' || dropdown.style.display === '';
+            const isHidden = getComputedStyle(dropdown).display === 'none';
+            dropdown.style.display = isHidden ? 'block' : 'none';
           });
         }
 
