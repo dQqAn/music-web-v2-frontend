@@ -199,7 +199,7 @@ export function SoundCard({ sound }: { sound: Sound }) {
     }, [sound.soundID])
 
     addTempSoundID(sound.soundID)
-
+    
     return (
         <div style={{ border: '1px solid gray', padding: '10px', marginBottom: '10px' }}>
             <div style={{ display: 'flex', gap: '20px' }}>
@@ -269,7 +269,7 @@ export async function fetchSounds(page: number, categoryTag: string | null = nul
         }
     }
 
-    const res = await fetch(`http://localhost:8083/database/filterSounds?page=${page}`, {
+    const res = await fetch(`http://localhost:4000/api/database/filterSounds?page=${page}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
