@@ -124,7 +124,7 @@ export function SoundCard({ sound }: { sound: Sound }) {
         })
 
         setTimeout(() => {
-            const src = `http://localhost:8083/stream/sound/${encodeURIComponent(sound.soundID)}`;
+            const src = `http://localhost:4000/api/stream/sound/${encodeURIComponent(sound.soundID)}`;
             listWaveSurfer.load(src)
             listWaveSurfer.getWrapper().className = "waveSurfer_" + sound.soundID
         }, 1000);
@@ -166,8 +166,7 @@ export function SoundCard({ sound }: { sound: Sound }) {
                             otherIcon.setAttribute('data-lucide', 'play');
                         }
                     });
-
-                    const src = `http://localhost:8083/stream/sound/${encodeURIComponent(sound.soundID)}`;
+                    const src = `http://localhost:4000/api/stream/sound/${encodeURIComponent(sound.soundID)}`;
                     mainWaveSurfer?.load(src)
                     const wrapper = mainWaveSurfer?.getWrapper()
 

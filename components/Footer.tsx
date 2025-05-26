@@ -9,10 +9,6 @@ export default function Footer() {
 
         <div className={styles.footerStart}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
-            <div>
-              <img id="mainSoundImage" src="/images/logo.png" alt="">
-              </img>
-            </div>
             <div >
               <p id="mainSoundName">Sound Name</p>
               <div id="mainArtistsName">Artist Name</div>
