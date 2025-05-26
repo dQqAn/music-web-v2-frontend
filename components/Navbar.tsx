@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import CustomButton from './button/CustomButton';
 import styles from './Navbar.module.css'
+import UserSection from './UserSection';
 
 export default function Navbar() {
   const router = useRouter()
@@ -12,23 +13,25 @@ export default function Navbar() {
 
   return (
     <nav className={styles.nav}>
-  <div className={styles.wrapper}>
-    <div>
-      <input
-        type="text"
-        id="searchInput"
-        placeholder="Search sound..."
-      />
-      <div id="searchResults"></div>
-    </div>
+      <div className={styles.wrapper}>
+        <div>
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search sound..."
+          />
+          <div id="searchResults"></div>
+        </div>
 
-    <div>
-      
-    <CustomButton text="Homepage" onClickAction={() => handleClick('/')} />
-    </div>
+        <div>
 
-    <div id="user_section"></div>
-  </div>
-</nav>
+          <CustomButton text="Homepage" onClickAction={() => handleClick('/')} />
+        </div>
+
+        <div id="user_section">
+          <UserSection />
+        </div>
+      </div>
+    </nav>
   );
 }

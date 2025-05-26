@@ -15,7 +15,7 @@ export default function Home() {
     filterSounds(1)
   }, []);*/
   waveformPlayer()
-  auth()
+  //auth()
   audioPlayer()
 
   return (
