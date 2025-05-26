@@ -99,14 +99,13 @@ export function SoundCard({ sound }: { sound: Sound }) {
         })
 
         waveSurferRef.current = listWaveSurfer
+        soundListWaveSurfers[sound.soundID] = listWaveSurfer
 
-        window.addEventListener('beforeunload', () => {
+        /*window.addEventListener('beforeunload', () => {
             if (listWaveSurfer) {
                 listWaveSurfer.destroy()
             }
-        });
-
-        soundListWaveSurfers[sound.soundID] = listWaveSurfer
+        });*/
 
         const timeID = 'time_' + sound.soundID
         const durationID = 'duration_' + sound.soundID
@@ -123,11 +122,32 @@ export function SoundCard({ sound }: { sound: Sound }) {
             }
         })
 
-        setTimeout(() => {
-            const src = `http://localhost:4000/api/stream/sound/${encodeURIComponent(sound.soundID)}`;
-            listWaveSurfer.load(src)
-            listWaveSurfer.getWrapper().className = "waveSurfer_" + sound.soundID
-        }, 1000);
+        const controller = new AbortController()
+        const signal = controller.signal
+
+        const fetchAudio = async () => {
+            try {
+                const response = await fetch(
+                    `http://localhost:4000/api/stream/sound/${encodeURIComponent(sound.soundID)}`,
+                    { signal }
+                )
+                if (!response.ok) {
+                    throw new Error('Audio fetch failed')
+                }
+                const blob = await response.blob()
+                await listWaveSurfer.loadBlob(blob)
+
+            } catch (e: any) {
+                if (e.name === 'AbortError') {
+                    console.warn('Audio fetch aborted')
+                } else {
+                    console.error('Audio fetch failed:', e)
+                }
+            }
+        }
+
+        fetchAudio()
+
 
         waveContainerRef.current.addEventListener('click', (e) => {
             const soundID = mainWaveSurfer?.getWrapper().className.split("_").pop();
@@ -145,6 +165,8 @@ export function SoundCard({ sound }: { sound: Sound }) {
         });
 
         listWaveSurfer.once('ready', () => {
+            listWaveSurfer.getWrapper().className = "waveSurfer_" + sound.soundID
+
             onClickRef.current = () => {
                 const icon = document.querySelector('.icon_' + sound.soundID);
 
@@ -193,12 +215,17 @@ export function SoundCard({ sound }: { sound: Sound }) {
         })
 
         return () => {
-            listWaveSurfer.destroy()
+            try {
+                controller.abort()
+                listWaveSurfer.destroy()
+            } catch (e) {
+                console.warn('WaveSurfer destroy error:', e)
+            }
         }
     }, [sound.soundID])
 
     addTempSoundID(sound.soundID)
-    
+
     return (
         <div style={{ border: '1px solid gray', padding: '10px', marginBottom: '10px' }}>
             <div style={{ display: 'flex', gap: '20px' }}>

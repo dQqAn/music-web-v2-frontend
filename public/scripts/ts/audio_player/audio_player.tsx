@@ -131,17 +131,15 @@ export function audioPlayer() {
                         console.error('Fetch failed:', err);
                     });
             } else {
-                setTimeout(() => {
-                    const src = `http://localhost:8083/stream/sound/${encodeURIComponent(soundID)}`;
-                    if (mainWaveSurfer?.getWrapper().className) {
-                        mainWaveSurfer?.load(src);
+                const src = `http://localhost:8083/stream/sound/${encodeURIComponent(soundID)}`;
+                if (mainWaveSurfer?.getWrapper().className) {
+                    mainWaveSurfer?.load(src);
 
-                        const wrapper = mainWaveSurfer?.getWrapper()
-                        if (wrapper) {
-                            wrapper.className = "main_waveSurfer_" + soundID
-                        }
+                    const wrapper = mainWaveSurfer?.getWrapper()
+                    if (wrapper) {
+                        wrapper.className = "main_waveSurfer_" + soundID
                     }
-                }, 1000);
+                }
             }
             if (currentTime && volume) {
                 mainWaveSurfer?.once('ready', () => {
