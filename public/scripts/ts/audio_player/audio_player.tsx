@@ -19,6 +19,7 @@ import { createFavDiv } from '../favourite'
 import { setSoundInfos } from '../sound/sound'
 import { createStemsContent } from '../stems'
 import { useEffect, useRef } from 'react'
+import { fetchAudio } from '../../newSoundList'
 
 export let mainWaveSurfer: WaveSurfer | null = null;
 
@@ -131,9 +132,14 @@ export function audioPlayer() {
                         console.error('Fetch failed:', err);
                     });
             } else {
-                const src = `http://localhost:8083/stream/sound/${encodeURIComponent(soundID)}`;
+
                 if (mainWaveSurfer?.getWrapper().className) {
-                    mainWaveSurfer?.load(src);
+                    const controller = new AbortController()
+                    const signal = controller.signal
+                    fetchAudio(soundID, mainWaveSurfer, signal);
+
+                    //const src = `http://localhost:4000/api/stream/sound/${encodeURIComponent(soundID)}`;
+                    //mainWaveSurfer?.load(src);
 
                     const wrapper = mainWaveSurfer?.getWrapper()
                     if (wrapper) {
@@ -254,8 +260,17 @@ export function audioPlayer() {
 
                 const localSoundID = getStoredSoundIDs()[0]
                 if (localSoundID) {
-                    const src = `http://localhost:8083/stream/sound/${encodeURIComponent(localSoundID)}`;
-                    mainWaveSurfer?.load(src)
+
+                    if (mainWaveSurfer) {
+                        const controller = new AbortController()
+                        const signal = controller.signal
+
+                        fetchAudio(localSoundID, mainWaveSurfer, signal);
+
+                        //const src = `http://localhost:4000/api/stream/sound/${encodeURIComponent(localSoundID)}`;
+                        //mainWaveSurfer?.load(src)
+                    }
+
                     const wrapper = mainWaveSurfer?.getWrapper()
                     if (wrapper) {
                         wrapper.className = "main_waveSurfer_" + localSoundID
@@ -319,12 +334,15 @@ export function audioPlayer() {
                     const tempIDs = getTempStoredSoundIDs();
                     const index = tempIDs.indexOf(soundID);
 
-                    if (index !== -1) {
+                    if (index !== -1 && mainWaveSurfer) {
                         const targetID = index > 0 ? tempIDs[index - 1] : tempIDs[0];
                         replaceSoundIDsWith(targetID);
 
-                        const src = `http://localhost:8083/stream/sound/${encodeURIComponent(targetID)}`;
-                        mainWaveSurfer?.load(src)
+                        const controller = new AbortController()
+                        const signal = controller.signal
+                        fetchAudio(targetID, mainWaveSurfer, signal);
+                        //const src = `http://localhost:4000/api/stream/sound/${encodeURIComponent(targetID)}`;
+                        //mainWaveSurfer?.load(src)
 
                         const wrapper = mainWaveSurfer?.getWrapper()
                         if (wrapper) {
@@ -342,12 +360,16 @@ export function audioPlayer() {
                     const tempIDs = getTempStoredSoundIDs();
                     const index = tempIDs.indexOf(soundID);
 
-                    if (index !== -1 && index < tempIDs.length - 1) {
+                    if (index !== -1 && index < tempIDs.length - 1 && mainWaveSurfer) {
                         const nextID = tempIDs[index + 1];
                         replaceSoundIDsWith(nextID);
 
-                        const src = `http://localhost:8083/stream/sound/${encodeURIComponent(nextID)}`;
-                        mainWaveSurfer?.load(src)
+                        const controller = new AbortController()
+                        const signal = controller.signal
+                        fetchAudio(nextID, mainWaveSurfer, signal);
+
+                        //const src = `http://localhost:4000/api/stream/sound/${encodeURIComponent(nextID)}`;
+                        //mainWaveSurfer?.load(src)
 
                         const wrapper = mainWaveSurfer?.getWrapper()
                         if (wrapper) {
@@ -581,8 +603,8 @@ async function createPlaylistContent(playlistOverlayContent: HTMLElement, soundI
                 }
             });
 
-            const src = `http://localhost:8083/stream/sound/${encodeURIComponent(soundID)}`;
-            if (currentSrc === src) {
+            const src = `http://localhost:4000/api/stream/sound/${encodeURIComponent(soundID)}`;
+            if (currentSrc === src && mainWaveSurfer) {
                 if (mainWaveSurfer?.isPlaying()) {
                     const icon = document.querySelector('.playlist_icon_' + soundID);
                     if (icon) {
@@ -600,7 +622,11 @@ async function createPlaylistContent(playlistOverlayContent: HTMLElement, soundI
                     }
                 }
 
-                mainWaveSurfer?.load(src);
+                const controller = new AbortController()
+                const signal = controller.signal
+                fetchAudio(soundID, mainWaveSurfer, signal);
+                //mainWaveSurfer?.load(src);
+
                 const wrapper = mainWaveSurfer?.getWrapper()
                 if (wrapper) {
                     wrapper.className = "main_waveSurfer_" + soundID

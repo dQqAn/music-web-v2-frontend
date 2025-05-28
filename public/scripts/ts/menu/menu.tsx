@@ -27,7 +27,7 @@ export function useUIInteractions() {
       updateBpmDisplay(false)
 
       // Tag Menu
-      openCloseButtons('menuWrapper')
+      //openCloseButtons('menuWrapper')
 
       const categoryDataName = 'categories'
       const hasDurationProgressiveBar = true

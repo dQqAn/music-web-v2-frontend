@@ -12,7 +12,7 @@ export default function UserSection() {
   }, []);
 
   if (loggedIn === null) return null;         
-  if (loggedIn) return <Link href="/dashboard">Dashboard</Link>;
+  if (loggedIn) return <Link href="http://localhost:4000/api/dashboard">Dashboard</Link>;
 
   const redirect = encodeURIComponent(window.location.href);
   return (

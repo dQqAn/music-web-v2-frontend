@@ -125,29 +125,7 @@ export function SoundCard({ sound }: { sound: Sound }) {
         const controller = new AbortController()
         const signal = controller.signal
 
-        const fetchAudio = async () => {
-            try {
-                const response = await fetch(
-                    `http://localhost:4000/api/stream/sound/${encodeURIComponent(sound.soundID)}`,
-                    { signal }
-                )
-                if (!response.ok) {
-                    throw new Error('Audio fetch failed')
-                }
-                const blob = await response.blob()
-                await listWaveSurfer.loadBlob(blob)
-
-            } catch (e: any) {
-                if (e.name === 'AbortError') {
-                    console.warn('Audio fetch aborted')
-                } else {
-                    console.error('Audio fetch failed:', e)
-                }
-            }
-        }
-
-        fetchAudio()
-
+        fetchAudio(sound.soundID, listWaveSurfer, signal);
 
         waveContainerRef.current.addEventListener('click', (e) => {
             const soundID = mainWaveSurfer?.getWrapper().className.split("_").pop();
@@ -319,3 +297,30 @@ export async function fetchSounds(page: number, categoryTag: string | null = nul
     const data: SoundListWithSize = await res.json()
     return data
 }
+
+export const fetchAudio = async (
+    soundID: string,
+    waveSurfer: WaveSurfer,
+    signal?: AbortSignal
+): Promise<void> => {
+    try {
+        const response = await fetch(
+            `http://localhost:4000/api/stream/sound/${encodeURIComponent(soundID)}`,
+            { signal }
+        );
+
+        if (!response.ok) {
+            throw new Error('Audio fetch failed');
+        }
+
+        const blob = await response.blob();
+        await waveSurfer.loadBlob(blob);
+
+    } catch (e: any) {
+        if (e.name === 'AbortError') {
+            console.warn('Audio fetch aborted');
+        } else {
+            console.error('Audio fetch failed:', e);
+        }
+    }
+};

@@ -4,7 +4,7 @@ import styles from './Footer.module.css'
 
 export default function Footer() {
   return (
-    <footer className={styles.footer}>
+    <footer className={styles.footer} style={{ position: 'fixed', bottom: 0, width: '100%' }}>
       <div className={styles.wrapper}>
 
         <div className={styles.footerStart}>

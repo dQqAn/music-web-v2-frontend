@@ -20,9 +20,7 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
-      <main className={styles.main}>
-
-        <div style={{ display: 'flex', width: '100%' }}>
+      <div style={{ display: 'flex', width: '100%' }}>
           <div id="menuWrapper" className={styles.menuWrapper}>
             <div className={styles.section}>
               <div style={{ marginBottom: 16 }}>
@@ -96,8 +94,6 @@ export default function Home() {
             <div id="pagination" className={styles.pagination}></div>
           </div>
         </div>
-
-      </main>
     </div>
   );
 }
