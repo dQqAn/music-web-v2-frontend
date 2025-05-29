@@ -37,7 +37,9 @@ export default function Dashboard() {
 
   return (
     <div className={styles.page}>
-      <h1>Moderator Dashboard</h1>
+      <button onClick={() => window.location.href = '/profile/moderator'}>Profile</button>
+      <button onClick={() => window.location.href = '/profile/moderator/pending_approval'}>Pending Approval</button>
+      <button onClick={() => window.location.href = 'http://localhost:4000/api/auth/logout'}>Logout</button>
     </div>
   )
 }

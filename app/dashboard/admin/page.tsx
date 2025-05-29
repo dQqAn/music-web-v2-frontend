@@ -37,7 +37,10 @@ export default function Dashboard() {
 
   return (
     <div className={styles.page}>
-      <h1>Admin Dashboard</h1>
+      <button onClick={() => window.location.href = '/profile/admin'}>Profile</button>
+      <button onClick={() => window.location.href = '/profile/admin/register'}>Register</button>
+      <button onClick={() => window.location.href = 'http://localhost:4000/api/auth/logout'}>Logout</button>
+      <button onClick={() => window.location.href = 'http://localhost:4000/api/admin/metaDataSave'}>MetaDataSave</button>
     </div>
   )
 }
