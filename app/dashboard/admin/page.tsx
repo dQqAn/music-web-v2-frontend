@@ -30,10 +30,10 @@ export default function Dashboard() {
     checkAdmin()
   }, [router])
 
-  if (isLoading) return null
-
   waveformPlayer()
   audioPlayer()
+
+  if (isLoading) return null
 
   return (
     <div className={styles.page}>

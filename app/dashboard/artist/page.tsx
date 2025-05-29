@@ -17,7 +17,6 @@ export default function Dashboard() {
           credentials: 'include'
         })
         const isArtist = await res.json()
-        console.log("asfsdmf: ",isArtist)
         if (!isArtist) {
           router.push('/')
         } else {
@@ -31,10 +30,10 @@ export default function Dashboard() {
     checkArtist()
   }, [router])
 
-  if (isLoading) return null
-
   waveformPlayer()
   audioPlayer()
+
+  if (isLoading) return null
 
   return (
     <div className={styles.page}>
