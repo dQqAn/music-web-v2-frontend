@@ -1,6 +1,7 @@
 import WaveSurfer from 'wavesurfer.js'
 import { clearAllSelections, filterMenu, renderMenu } from "../menu/menu";
 import { useEffect } from 'react';
+import { analyzeBPMFromFile } from '@/lib/sound/analyzeBPMFromFile';
 
 function formSubmit() {
     document.getElementById("uploadForm")?.addEventListener("submit", async (event) => {
@@ -24,6 +25,7 @@ function formSubmit() {
         formData.append("image", imageInput.files[0]);
         formData.append("sound", soundInput.files[0]);
         formData.append("name", soundName.value);
+        formData.append("bpm", bpm.toString());
 
         let categorySelectedTags = [...categorySelectedItems]
             .filter((item: any) => item.source === 'category' && item.tag && item.name)
@@ -53,7 +55,7 @@ function formSubmit() {
 
         try {
             clearInfos()
-            
+
             const response = await fetch("http://localhost:4000/api/database/artist/upload_sound", {
                 method: "POST",
                 body: formData,
@@ -89,6 +91,8 @@ let instrumentRootItems: any[] = [];
 
 let loops: any[] = []
 let loopsCounter = 0
+
+let bpm: number = 60
 
 let artistWaveSurfer: WaveSurfer | null = null;
 /*const waveSurfer = WaveSurfer.create({
@@ -199,7 +203,7 @@ export function artistSingleSound() {
 
                     if (!text) return;
 
-                    const response = await fetch(`http://localhost:8083/searchArtist?query=${encodeURIComponent(text)}`, {
+                    const response = await fetch(`http://localhost:4000/searchArtist?query=${encodeURIComponent(text)}`, {
                         credentials: 'include'
                     });
 
@@ -290,7 +294,7 @@ export function artistSingleSound() {
                 selectedSoundName.textContent = fileName;
             }
         });
-        soundInput.addEventListener('change', (event) => {
+        soundInput.addEventListener('change', async (event) => {
             const file = (event.target as HTMLInputElement).files?.[0]
             if (file) {
                 const fileName = file.name.toLowerCase()
@@ -298,6 +302,10 @@ export function artistSingleSound() {
                 if (isValid) {
                     soundBox.style.display = "block"
                     artistWaveSurfer?.loadBlob(file)
+
+                    const tempBpm = await analyzeBPMFromFile(file);
+                    bpm = tempBpm
+                    //console.log('BPM:', tempBpm);
                 }
             } else {
                 soundBox.style.display = "none"
