@@ -5,7 +5,7 @@ import { formatTime, mainWaveSurfer } from './audio_player/audio_player'
 import { toSlug } from './header'
 import { createFavDiv } from './favourite'
 import { createStemsContent } from './stems'
-import { activeStatus } from "./index/auth"
+import { activeStatus } from "@/lib/tokenControl";
 import { useEffect } from 'react'
 import { DynamicIcon } from 'lucide-react/dynamic';
 
@@ -119,231 +119,8 @@ export function handlePlaylistIDToStorage(playlistID: string | null) {
 
 //endregion
 
-export async function soundList(containerID: string, sounds: any[]) {
-    const container = document.getElementById(containerID)
-    if (!container) return;
-
-    container.innerHTML = '';
-    clearTempAllSoundIDs()
-
-    for (const item of sounds) {
-        addTempSoundID(item.soundID)
-
-        const regions = RegionsPlugin.create()
-
-        const listItem = document.createElement('div');
-        listItem.style.display = 'flex';
-
-        const infos = document.createElement('div')
-        infos.innerHTML = `
-                    <a href="http://localhost:8083/sound/?${toSlug(item.name)}&soundID=${item.soundID}">
-                        <h5>${item.name}</h5>      
-                    </a>
-                    ${item.artistInfos.map((artist: any) => `
-                        <h1>                    
-                          <a href="http://localhost:8083/artist_profile/${artist.id}">${artist.name}</a>
-                        </h1>
-                    `).join("")}
-                `;
-
-        const durationInfos = document.createElement('div');
-        durationInfos.innerHTML = `
-                        <p id="time_${item.soundID}">0:00</p>
-                        <p id="duration_${item.soundID}">0:00</p>
-                    `;
-
-        const playButton = document.createElement('button')
-        const playIcon = document.createElement('i');
-        playIcon.setAttribute('data-lucide', 'play');
-        playIcon.className = `icon_${item.soundID}`;
-        playIcon.textContent = 'Play'
-        playButton.appendChild(playIcon);
-
-        const leftDiv = document.createElement('div');
-        leftDiv.style.display = 'flex';
-        const img = document.createElement('img')
-        img.src = item.image1Path
-
-        const centerDiv = document.createElement('div');
-
-        leftDiv.appendChild(img);
-        leftDiv.appendChild(playButton);
-        leftDiv.appendChild(infos);
-        centerDiv.appendChild(createCategoryElement(item));
-        listItem.appendChild(leftDiv)
-        listItem.appendChild(centerDiv)
-        container.appendChild(listItem)
-
-        const waveSurferDiv = document.createElement('div');
-        waveSurferDiv.style.width = '100%';
-        waveSurferDiv.id = 'div_' + item.soundID
-
-        const listWaveSurfer = WaveSurfer.create({
-            container: waveSurferDiv,
-            waveColor: 'rgb(200, 0, 200)',
-            progressColor: 'rgb(100, 0, 100)',
-            url: '',
-            height: 75,
-            // dragToSeek: true, // minPxPerSec: 100,
-            plugins: [
-                HoverPlugin.create({
-                    lineColor: '#ff0000',
-                    lineWidth: 2,
-                    labelBackground: '#555',
-                    labelColor: '#fff',
-                    labelSize: '11px',
-                }),
-                regions
-            ],
-        })
-
-        window.addEventListener('beforeunload', () => {
-            if (listWaveSurfer) {
-                listWaveSurfer.destroy()
-            }
-        });
-
-        soundListWaveSurfers[item.soundID] = listWaveSurfer
-
-        const downloadButton = document.createElement('button')
-        const downloadIcon = document.createElement('i');
-        downloadIcon.setAttribute('data-lucide', 'arrow-down-to-line');
-        downloadIcon.className = `${'icon_' + item.soundID}`;
-        downloadIcon.textContent = 'Download'
-
-        downloadButton.appendChild(downloadIcon);
-        downloadButton.onclick = () => {
-            downloadSound(item.soundID)
-        }
-
-        const favDiv = document.createElement('div')
-        favDiv.id = 'fav-btn-' + item.soundID
-
-        const rightDiv = document.createElement('div');
-        rightDiv.style.display = 'flex';
-
-        const stemsButton = document.createElement('button')
-        const stemsIcon = document.createElement('i');
-        stemsIcon.setAttribute('data-lucide', 'audio-lines');
-        stemsIcon.className = `${'icon_' + item.soundID}`;
-        stemsIcon.textContent = 'Stems'
-
-        stemsButton.appendChild(stemsIcon);
-
-        const bpmText = document.createElement('p')
-        bpmText.textContent = 'BPM: ' + item.bpm
-
-        rightDiv.appendChild(bpmText);
-        rightDiv.appendChild(stemsButton);
-        rightDiv.appendChild(durationInfos);
-        rightDiv.appendChild(waveSurferDiv);
-        rightDiv.appendChild(downloadButton);
-        rightDiv.appendChild(favDiv);
-        rightDiv.appendChild(createListMenu(item));
-        listItem.appendChild(rightDiv);
-        container.appendChild(listItem);
-
-        const timeID = 'time_' + item.soundID
-        const durationID = 'duration_' + item.soundID
-        const timeEl = document.getElementById(timeID)
-        const durationEl = document.getElementById(durationID)
-        listWaveSurfer.on('decode', (duration) => {
-            if (durationEl) {
-                durationEl.textContent = formatTime(duration)
-            }
-        })
-        listWaveSurfer.on('timeupdate', (currentTime) => {
-            if (timeEl) {
-                timeEl.textContent = formatTime(currentTime)
-            }
-        })
-
-        setTimeout(() => {
-            const src = `http://localhost:8083/stream/sound/${encodeURIComponent(item.soundID)}`;
-            listWaveSurfer.load(src)
-            listWaveSurfer.getWrapper().className = "waveSurfer_" + item.soundID
-        }, 1000);
-
-        listWaveSurfer.once('ready', () => {
-            playButton.onclick = () => {
-                const icon = document.querySelector('.icon_' + item.soundID);
-
-                if (icon?.getAttribute('data-lucide') === 'play') {
-
-                    replaceSoundIDsWith(item.soundID)
-
-                    const pathSegments = window.location.pathname.split('/');
-                    const playlistID = (pathSegments[1] === "playlist" && pathSegments[2]) ? pathSegments[2] : null;
-                    if (playlistID) {
-                        handlePlaylistIDToStorage(playlistID)
-                    } else {
-                        handlePlaylistIDToStorage(null)
-                    }
-
-                    const icons = document.querySelectorAll('[data-lucide]');
-                    icons.forEach(otherIcon => {
-                        if (otherIcon.getAttribute('data-lucide') === 'pause') {
-                            otherIcon.setAttribute('data-lucide', 'play');
-                        }
-                    });
-
-                    const src = `http://localhost:8083/stream/sound/${encodeURIComponent(item.soundID)}`;
-                    mainWaveSurfer?.load(src)
-                    const wrapper = mainWaveSurfer?.getWrapper()
-
-                    if (wrapper) {
-                        wrapper.className = "main_waveSurfer_" + item.soundID
-                    }
-
-                    const listIcon = document.querySelector('.icon_' + item.soundID);
-                    listIcon?.setAttribute('data-lucide', 'pause');
-
-                    mainWaveSurfer?.once('ready', () => {
-                        const rateInput = document.getElementById('mainRateInput') as HTMLInputElement;
-                        if (rateInput) {
-                            mainWaveSurfer?.setPlaybackRate(rateInput.valueAsNumber);
-                        }
-                        mainWaveSurfer?.play()
-                    })
-                } else {
-                    mainWaveSurfer?.pause()
-                    const listIcon = document.querySelector('.icon_' + item.soundID);
-                    listIcon?.setAttribute('data-lucide', 'play');
-                }
-            }
-        })
-
-        waveSurferDiv.addEventListener('click', (e) => {
-            const soundID = mainWaveSurfer?.getWrapper().className.split("_").pop();
-            const className = 'waveSurfer_' + soundID;
-            if (listWaveSurfer.getWrapper().className === className) {
-                const bbox = waveSurferDiv.getBoundingClientRect();
-                const x = e.clientX - bbox.left;
-                const percent = x / bbox.width;
-
-                const duration = mainWaveSurfer?.getDuration();
-                if (duration && !isNaN(percent)) {
-                    mainWaveSurfer?.seekTo(percent);
-                }
-            }
-        });
-
-        stemsButton.addEventListener('click', () => {
-            createStemsContent(item.soundID)
-        })
-
-        const handleFavorite = async () => {
-            if (activeStatus) {
-                await createFavDiv(favDiv.id, item.soundID, false)
-            }
-        }
-        handleFavorite()
-
-    }
-}
-
 export async function downloadSound(soundID: string, stems = false, stemPath = "", stretchedSound = false, duration = 0) {
-    const url = `http://localhost:8083/download/sound/${encodeURIComponent(soundID)}?stems=${stems}&stemPath=${stemPath}&stretchedSound=${stretchedSound}&duration=${duration}`;
+    const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/download/sound/${encodeURIComponent(soundID)}?stems=${stems}&stemPath=${stemPath}&stretchedSound=${stretchedSound}&duration=${duration}`;
 
     const response = await fetch(url);
     if (!response.ok) {
@@ -373,7 +150,7 @@ export async function downloadSound(soundID: string, stems = false, stemPath = "
 }
 
 export async function getSound(soundID: string) {
-    const response = await fetch(`http://localhost:8083/database/sound/${soundID}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/sound/${soundID}`, {
         headers: {
             'Accept': 'application/json'
         },
@@ -401,7 +178,7 @@ function createCategoryElement(item: any) {
 
     visibleCategories.forEach(({ tag, source }) => {
         const p = document.createElement('p');
-        p.innerHTML = `<a href="http://localhost:8083/category/${encodeURIComponent(tag)}__${source}">${tag}</a>`;
+        p.innerHTML = `<a href="${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/category/${encodeURIComponent(tag)}__${source}">${tag}</a>`;
         categoryGroup.appendChild(p);
     });
 
@@ -417,7 +194,7 @@ function createCategoryElement(item: any) {
 
         hiddenCategories.forEach(({ tag, source }) => {
             const p = document.createElement('p');
-            p.innerHTML = `<a href="http://localhost:8083/category/${encodeURIComponent(tag)}__${source}">${tag}</a>`;
+            p.innerHTML = `<a href="${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/category/${encodeURIComponent(tag)}__${source}">${tag}</a>`;
             popup.appendChild(p);
         });
 

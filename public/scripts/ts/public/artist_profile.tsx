@@ -1,4 +1,3 @@
-import { filterSounds } from "../menu/menu.jsx";
 import { setUserInfos } from "../profile/profile.jsx";
 import { useEffect } from "react";
 
@@ -10,7 +9,7 @@ export function artistProfileContent() {
         const div = document.getElementById('soundList');
         if (div && artistID) {
             setUserInfos(artistID, 'userProfileImage', 'userName', 'userBackgroundImage');
-            filterSounds(1, null, artistID);
+            //filterSounds(1, null, artistID);
         }
     }, [])
 }

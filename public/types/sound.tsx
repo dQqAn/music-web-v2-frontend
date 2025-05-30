@@ -1,11 +1,11 @@
-export interface ArtistInfos {
+export interface artistIDs {
   id: string
   name: string
 }
 
 export interface Sound {
   name: string
-  artistInfos: ArtistInfos[]
+  artistIDs: artistIDs[]
   status: string
   categories: string[]
   moods: string[]
@@ -21,4 +21,8 @@ export interface Sound {
 export interface SoundListWithSize {
   sounds: Sound[]
   length: number
+}
+
+export interface SelectedSoundIds{
+  soundIDs: string[]
 }

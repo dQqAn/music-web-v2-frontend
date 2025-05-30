@@ -40,7 +40,7 @@ export function createStemsContent(soundID: string) {
 
     stemsOverlay.style.display = 'block';
 
-    fetch(`http://localhost:8083/database/soundStems/${soundID}`, {
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/database/soundStems/${soundID}`, {
         headers: {
             'Accept': 'application/json'
         }
@@ -145,7 +145,7 @@ async function stemsContent(stemsOverlayContent: any, stems: any, soundID: strin
     mainStemWaveSurfer.setMuted(true);
     stemsListWaveSurfers[soundID] = mainStemWaveSurfer
 
-    const src = `http://localhost:8083/stream/sound/${encodeURIComponent(soundID)}`;
+    const src = `${process.env.NEXT_PUBLIC_BACKEND_URL}/stream/sound/${encodeURIComponent(soundID)}`;
     mainStemWaveSurfer.load(src)
 
     const mainStemPlayButton = document.createElement('button')
@@ -256,7 +256,7 @@ async function stemsContent(stemsOverlayContent: any, stems: any, soundID: strin
             }
         });
 
-        const src = `http://localhost:8083/stream/sound/${encodeURIComponent(soundID)}?stems=true&stemPath=${stem.stemPath}`;
+        const src = `${process.env.NEXT_PUBLIC_BACKEND_URL}/stream/sound/${encodeURIComponent(soundID)}?stems=true&stemPath=${stem.stemPath}`;
         stemWaveSurfer.load(src)
         stemWaveSurfer.getWrapper().className = "stem_waveSurfer_" + soundID
 

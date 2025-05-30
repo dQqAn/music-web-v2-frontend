@@ -1,4 +1,3 @@
-import { soundList } from "../soundList";
 import { updatePagination } from "../pagination";
 import { useEffect } from "react";
 
@@ -23,7 +22,7 @@ export function playlistContent() {
 }
 async function playlistSounds(page = 1, playlistID: string) {
     useEffect(() => {
-        fetch(`http://localhost:8083/database/userPlaylist/${playlistID}?page=${page}`, {
+        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/database/userPlaylist/${playlistID}?page=${page}`, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -38,7 +37,7 @@ async function playlistSounds(page = 1, playlistID: string) {
             const length = data.length || 0
 
             try {
-                await soundList('soundList', sounds)
+                //await soundList('soundList', sounds)
             } catch (error) {
                 console.error('soundList Error:', error);
                 throw error;
@@ -58,7 +57,7 @@ async function playlistSounds(page = 1, playlistID: string) {
 
 /*async function playlistSize(playlistID) {
     try {
-        const response = await fetch(`http://localhost:8083/database/userPlaylistSize/${playlistID}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/database/userPlaylistSize/${playlistID}`, {
             headers: {
                 'Content-Type': 'application/json',
             },

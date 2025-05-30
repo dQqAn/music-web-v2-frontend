@@ -116,7 +116,7 @@ export function audioPlayer() {
             if (!soundID) {
                 console.warn(`soundID is missing, cannot load track. ${soundID}`);
             } else if (playlistID) {
-                fetch(`http://localhost:8083/database/playlistSoundIDs/${playlistID}`)
+                fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/database/playlistSoundIDs/${playlistID}`)
                     .then(res => {
                         if (!res.ok) {
                             console.error('playlistSoundIDs error')
@@ -138,7 +138,7 @@ export function audioPlayer() {
                     const signal = controller.signal
                     fetchAudio(soundID, mainWaveSurfer, signal);
 
-                    //const src = `http://localhost:4000/api/stream/sound/${encodeURIComponent(soundID)}`;
+                    //const src = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/stream/sound/${encodeURIComponent(soundID)}`;
                     //mainWaveSurfer?.load(src);
 
                     const wrapper = mainWaveSurfer?.getWrapper()
@@ -267,7 +267,7 @@ export function audioPlayer() {
 
                         fetchAudio(localSoundID, mainWaveSurfer, signal);
 
-                        //const src = `http://localhost:4000/api/stream/sound/${encodeURIComponent(localSoundID)}`;
+                        //const src = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/stream/sound/${encodeURIComponent(localSoundID)}`;
                         //mainWaveSurfer?.load(src)
                     }
 
@@ -341,7 +341,7 @@ export function audioPlayer() {
                         const controller = new AbortController()
                         const signal = controller.signal
                         fetchAudio(targetID, mainWaveSurfer, signal);
-                        //const src = `http://localhost:4000/api/stream/sound/${encodeURIComponent(targetID)}`;
+                        //const src = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/stream/sound/${encodeURIComponent(targetID)}`;
                         //mainWaveSurfer?.load(src)
 
                         const wrapper = mainWaveSurfer?.getWrapper()
@@ -368,7 +368,7 @@ export function audioPlayer() {
                         const signal = controller.signal
                         fetchAudio(nextID, mainWaveSurfer, signal);
 
-                        //const src = `http://localhost:4000/api/stream/sound/${encodeURIComponent(nextID)}`;
+                        //const src = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/stream/sound/${encodeURIComponent(nextID)}`;
                         //mainWaveSurfer?.load(src)
 
                         const wrapper = mainWaveSurfer?.getWrapper()
@@ -603,7 +603,7 @@ async function createPlaylistContent(playlistOverlayContent: HTMLElement, soundI
                 }
             });
 
-            const src = `http://localhost:4000/api/stream/sound/${encodeURIComponent(soundID)}`;
+            const src = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/stream/sound/${encodeURIComponent(soundID)}`;
             if (currentSrc === src && mainWaveSurfer) {
                 if (mainWaveSurfer?.isPlaying()) {
                     const icon = document.querySelector('.playlist_icon_' + soundID);
@@ -687,7 +687,7 @@ const random = (min: number, max: number): number => Math.random() * (max - min)
 const randomColor = (): string => `rgba(${random(0, 255)}, ${random(0, 255)}, ${random(0, 255)}, 0.5)`
 
 export function fetchAndCreateRegions(soundID: string, regionCount: number, regionsPlugin: RegionsPlugin) {
-    fetch(`http://localhost:8083/database/regions/${soundID}`)
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/regions/${soundID}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('fetchAndCreateRegions error');
@@ -695,9 +695,20 @@ export function fetchAndCreateRegions(soundID: string, regionCount: number, regi
             return response.json();
         })
         .then(data => {
-            if (data.regions?.length > 0) {
-                data.regions.forEach(([start, end]: [number, number]) => {
-                    createRegion(regionCount, regionsPlugin, start, end)
+            let regions = data.regions;
+ 
+            if (typeof regions === 'string') {
+                try {
+                    regions = JSON.parse(regions);
+                } catch (e) {
+                    console.error("Regions JSON parse error:", e);
+                    regions = [];
+                }
+            }
+
+            if (Array.isArray(regions) && regions.length > 0) {
+                regions.forEach(([start, end]: [string, string]) => {
+                    createRegion(regionCount, regionsPlugin, parseFloat(start), parseFloat(end));
                 });
             }
         });

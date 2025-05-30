@@ -1,9 +1,9 @@
-import { activeStatus } from "./index/auth"
+import { activeStatus } from "@/lib/tokenControl";
 
 async function getFavStatus(soundID: string) {
     try {
         if (activeStatus === true) {
-            const res = await fetch(`http://localhost:8083/sound/checkFav/${soundID}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/sound/checkFav/${soundID}`, {
                 credentials: "include"
             });
             const data = await res.json();
@@ -47,7 +47,7 @@ export async function createFavDiv(favDivID: string, soundID: string, main = fal
 async function changeSoundFavouriteStatus(soundID: string, favID: string) {
     try {
         if (activeStatus === true) {
-            const response = await fetch('http://localhost:8083/database/favouriteSound', {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/favouriteSound`, {
                 credentials: "include",
                 method: 'POST',
                 headers: {

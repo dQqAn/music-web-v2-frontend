@@ -2,8 +2,8 @@ export let activeStatus = false;
 
 export async function tokenControl(): Promise<boolean> {
   
-  const CHECK  = 'http://localhost:4000/api/auth/check';
-  const REFRESH = 'http://localhost:4000/api/auth/refresh';
+  const CHECK  = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/check`;
+  const REFRESH = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/refresh`;
 
   /* 1. Is the access token still valid? */
   const res = await fetch(CHECK, { credentials: 'include' });

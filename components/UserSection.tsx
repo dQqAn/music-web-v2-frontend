@@ -12,11 +12,11 @@ export default function UserSection() {
   }, []);
 
   if (loggedIn === null) return null;         
-  if (loggedIn) return <Link href="http://localhost:4000/api/dashboard">Dashboard</Link>;
+  if (loggedIn) return <Link href={`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/dashboard`}>Dashboard</Link>;
 
   const redirect = encodeURIComponent(window.location.href);
   return (
-    <Link href={`http://localhost:4000/api/auth/start-login?redirectUrl=${redirect}`}>
+    <Link href={`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/start-login?redirectUrl=${redirect}`}>
       Login
     </Link>
   );

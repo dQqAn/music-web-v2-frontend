@@ -10,7 +10,7 @@ function getSounds(page: number) {
             throw new Error('page is not an int');
         }
 
-        fetch(`http://localhost:8083/database/moderatorSounds?page=${tempPage}`, {
+        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/database/moderatorSounds?page=${tempPage}`, {
             headers: {
                 'Accept': 'application/json'
             },
@@ -36,29 +36,33 @@ function getSounds(page: number) {
 
                 const soundPath = "\\" + soundItem.soundPath.replaceAll("/", "\\");
 
+                const artistArray = typeof soundItem.artistIDs === 'string'
+                    ? JSON.parse(soundItem.artistIDs)
+                    : soundItem.artistIDs;
+
                 row.innerHTML = `
                     <td ><input type="checkbox" data-sound-id="${soundItem.soundID}"></td>
                     <td >${soundItem.name}</td>
-                    <td >${soundItem.artistInfos.map((artist: any) => `
+                    <td >${artistArray.map((artist: any) => `
                             <p>
-                              <a href="http://localhost:8083/artist_profile/${artist.id}">${artist.name}</a>
+                              <a href="${process.env.NEXT_PUBLIC_BACKEND_URL}/artist_profile/${artist.id}">${artist.name}</a>
                             </p>
                             `).join("")}  </td>   
                     <td c>${combined.map(({ tag, source }) => `
                             <p>
-                              <a href="http://localhost:8083/category/${encodeURIComponent(tag)}__${source}">${tag}</a>
+                              <a href="${process.env.NEXT_PUBLIC_BACKEND_URL}/category/${encodeURIComponent(tag)}__${source}">${tag}</a>
                             </p>
                             `).join("")}</td>
                     
-                    <td ><a href="http://localhost:8083/${soundItem.image1Path}">Image</a></td>
+                    <td ><a href="${process.env.NEXT_PUBLIC_BACKEND_URL}/${soundItem.image1Path}">Image</a></td>
                     <td >
-                        <a href="http://localhost:8083/${soundPath}">Sound</a>
+                        <a href="${process.env.NEXT_PUBLIC_BACKEND_URL}/${soundPath}">Sound</a>
                     </td>
                 `;
                 tbody.appendChild(row);
             });
 
-            window.history.pushState({ page: tempPage }, `Page ${tempPage}`, `http://localhost:8083/moderator/pending_approval?page=${tempPage}`);
+            window.history.pushState({ page: tempPage }, `Page ${tempPage}`, `${process.env.NEXT_PUBLIC_BACKEND_URL}/moderator/pending_approval?page=${tempPage}`);
 
             const totalPages = Math.floor((length + 10 - 1) / 10);
             updatePagination('pagination', tempPage, totalPages, (p: number) => {
@@ -80,7 +84,7 @@ export function moderatorPendingApprovalContent() {
 
 /*async function soundsCount() {
     try {
-        const response = await fetch("http://localhost:8083/database/moderator_sounds_count", {});
+        const response = await fetch("${process.env.NEXT_PUBLIC_BACKEND_URL}/database/moderator_sounds_count", {});
         if (!response.ok) {
             console.error(`HTTP error! Status: ${response.status}`);
             return null;
@@ -118,7 +122,7 @@ document.getElementById('submitButton')?.addEventListener('click', async () => {
             }
 
             try {
-                const response = await fetch('http://localhost:8083/database/moderatorSounds', {
+                const response = await fetch('${process.env.NEXT_PUBLIC_BACKEND_URL}/database/moderatorSounds', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ soundIDs: selectedSoundIds }),

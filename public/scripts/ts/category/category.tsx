@@ -1,5 +1,4 @@
-import { useEffect } from 'react'
-import { filterSounds } from '../menu/menu'
+import { useEffect } from 'react' 
 
 
 export function categoryContent() {
@@ -12,7 +11,7 @@ export function categoryContent() {
 
         const categorySoundList = document.getElementById('soundList')
         if (categorySoundList) {
-            filterSounds(1, tag, null, source)
+            //filterSounds(1, tag, null, source)
         }
     }, [])
 

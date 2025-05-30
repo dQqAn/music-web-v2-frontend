@@ -13,7 +13,7 @@ export default function Dashboard() {
   useEffect(() => {
     const checkUser = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/auth/role/user', {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/role/user`, {
           credentials: 'include'
         })
         const isUser = await res.json()
@@ -39,7 +39,7 @@ export default function Dashboard() {
     <div className={styles.page}>
       <button onClick={() => window.location.href = '/profile/user'}>Profile</button>
       <button onClick={() => window.location.href = '/profile/user/library'}>Library</button>
-      <button onClick={() => window.location.href = 'http://localhost:4000/api/auth/logout'}>Logout</button>
+      <button onClick={() => window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/logout`}>Logout</button>
     </div>
   )
 }

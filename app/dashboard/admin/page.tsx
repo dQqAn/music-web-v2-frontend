@@ -13,7 +13,7 @@ export default function Dashboard() {
   useEffect(() => {
     const checkAdmin = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/auth/role/admin', {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/role/admin`, {
           credentials: 'include'
         })
         const isAdmin = await res.json()
@@ -39,8 +39,8 @@ export default function Dashboard() {
     <div className={styles.page}>
       <button onClick={() => window.location.href = '/profile/admin'}>Profile</button>
       <button onClick={() => window.location.href = '/profile/admin/register'}>Register</button>
-      <button onClick={() => window.location.href = 'http://localhost:4000/api/auth/logout'}>Logout</button>
-      <button onClick={() => window.location.href = 'http://localhost:4000/api/admin/metaDataSave'}>MetaDataSave</button>
+      <button onClick={() => window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/logout`}>Logout</button>
+      <button onClick={() => window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/admin/metaDataSave`}>MetaDataSave</button>
     </div>
   )
 }

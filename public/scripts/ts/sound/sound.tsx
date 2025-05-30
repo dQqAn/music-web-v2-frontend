@@ -39,7 +39,7 @@ export function soundPage() {
                         playIcon.textContent = 'Play'
                         playButton.appendChild(playIcon);
                         playButton.onclick = () => {
-                            const src = `http://localhost:8083/stream/sound/${encodeURIComponent(soundID)}`;
+                            const src = `${process.env.NEXT_PUBLIC_BACKEND_URL}/stream/sound/${encodeURIComponent(soundID)}`;
                             if (mainWaveSurfer?.isPlaying()) {
                                 mainWaveSurfer?.pause();
                                 return;
@@ -79,20 +79,25 @@ export function setSoundInfos(sound: any, soundImageDivID: string, soundNameDivI
 
     if (name) {
         name.innerHTML = `
-        <a href="http://localhost:8083/sound/?${toSlug(sound.name)}&soundID=${sound.soundID}">
+        <a href="${process.env.NEXT_PUBLIC_BACKEND_URL}/sound/?${toSlug(sound.name)}&soundID=${sound.soundID}">
                     <h5>${sound.name}</h5>      
                 </a>
-    `;
+         `;
         (name as HTMLElement).style.display = 'flex';
         if (artists) {
             artists.style.display = 'flex';
-            artists.innerHTML = `
-                    ${sound.artistInfos.map((artist: { id: string, name: string }) => `
-                        <p>
-                          <a href="http://localhost:8083/artist_profile/${artist.id}">${artist.name}</a>
-                        </p>
-                        `).join("")}  
-                    `;
+            const artistArray = typeof sound.artistIDs === 'string'
+                ? JSON.parse(sound.artistIDs)
+                : sound.artistIDs;
+            artists.innerHTML = artistArray
+                .map((artist: { id: string; name: string }) => `
+                    <p>
+                        <a href="${process.env.NEXT_PUBLIC_BACKEND_URL}/artist_profile/${artist.id}">
+                            ${artist.name}
+                        </a>
+                    </p>
+                `)
+                .join('');
         }
     }
 }

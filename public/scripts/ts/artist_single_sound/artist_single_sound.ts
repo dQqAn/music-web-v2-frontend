@@ -56,7 +56,7 @@ function formSubmit() {
         try {
             clearInfos()
 
-            const response = await fetch("http://localhost:4000/api/database/artist/upload_sound", {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/artist/upload_sound`, {
                 method: "POST",
                 body: formData,
                 credentials: 'include'
@@ -203,7 +203,7 @@ export function artistSingleSound() {
 
                     if (!text) return;
 
-                    const response = await fetch(`http://localhost:4000/searchArtist?query=${encodeURIComponent(text)}`, {
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/searchArtist?query=${encodeURIComponent(text)}`, {
                         credentials: 'include'
                     });
 
@@ -357,7 +357,7 @@ export function artistSingleSound() {
             endingTime.value = "0"
         })
 
-        fetch('http://localhost:8083/allMetaData')
+        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/allMetaData`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Menu loading error');

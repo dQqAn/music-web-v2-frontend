@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import type { Sound, SoundListWithSize } from '../../../types/sound'
 import { updatePagination } from '../pagination';
-import { soundList } from '../soundList';
 import { fetchSounds, SoundList } from '../../newSoundList';
 
 export function useUIInteractions() {
@@ -75,7 +74,7 @@ interface CategoryItem {
 }
 
 function dropDownMenu(page = 1, toggleBtnID: string, dropdownID: string, listID: string, dataName: string) {
-  fetch(`http://localhost:8083/allMetaData?page=${page}`)
+  fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/allMetaData?page=${page}`)
     .then(response => {
       if (!response.ok) {
         throw new Error('Menu loading error');
@@ -130,7 +129,7 @@ function dropDownMenu(page = 1, toggleBtnID: string, dropdownID: string, listID:
 }
 
 function loadMenuItems(clearButtonName: string, rootItems: any[], items: any[], menuContainerID: string, selectedItems: Set<any>, navigationStack: any[], currentItems: any[], metaDataName: string, dataName: string, selectedItemsContainer: string, backButtonID: string, page: number, hasDurationProgressiveBar: boolean) {
-  fetch(`http://localhost:8083/allMetaData?page=${page}`)
+  fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/allMetaData?page=${page}`)
     .then(response => {
       if (!response.ok) {
         throw new Error('Menu loading error');
@@ -278,88 +277,7 @@ function deleteItemByTag(tag: string, selectedItems: Set<{ tag: string }>) {
     }
   }
 }
-
-export function filterSounds(page: number, categoryTag: string | null = null, artistID: string | null = null, source: string | null = null) {
-  let minDuration = null
-  let maxDuration = null
-  if (isDurationChanged) {
-    const output = document.getElementById('durationOutput');
-    if (output && output.textContent) {
-      const outputResult = parseTimeRange(output.textContent);
-      minDuration = outputResult.minSeconds;
-      maxDuration = outputResult.maxSeconds;
-    }
-  }
-
-  let bpm = null
-  if (isBpmChanged) {
-    const output = document.getElementById('bpmOutput');
-    if (output && output.textContent) {
-      bpm = parseInt(output.textContent, 10);
-    }
-  }
-
-  const excludedTags = ['duration', 'bpm'];
-
-  let instrumentSelectedTags: string[] = []
-  instrumentSelectedTags = [...categorySelectedItems]
-    .filter((item: { tag: string, source: string }) => !excludedTags.includes(item.tag) && item.source === 'instrument')
-    .map((item: { tag: string }) => item.tag);
-
-  let categorySelectedTags: string[] = []
-  categorySelectedTags = [...categorySelectedItems]
-    .filter(item => !excludedTags.includes(item.tag) && item.source === 'category')
-    .map(item => item.tag);
-
-  if (categoryTag) {
-    if (source === 'instrument') {
-      instrumentSelectedTags.push(categoryTag)
-    } else {
-      categorySelectedTags.push(categoryTag)
-    }
-  }
-
-  fetch(`http://localhost:8083/database/filterSounds?page=${page}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      categorySelectedTags: categorySelectedTags,
-      instrumentSelectedTags: instrumentSelectedTags,
-      minDuration: minDuration,
-      maxDuration: maxDuration,
-      bpm: bpm,
-      artistID: artistID
-    })
-  }).then(response => {
-    if (!response.ok) {
-      console.log(`HTTP error! Status: ${response.status}`);
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    return response.json();
-  }).then(async data => {
-    const sounds = data.sounds || [];
-    const length = data.length || 0
-
-    try {
-      await soundList('soundList', sounds)
-    } catch (error) {
-      console.error('soundList Error:', error);
-      throw error;
-    }
-
-    window.history.pushState({ page: page }, `Page ${page}`, `?page=${page}`);
-
-    const totalPages = Math.floor((length + 10 - 1) / 10);
-    updatePagination("pagination", page, totalPages, (p: number) => {
-      filterSounds(p);
-    });
-  }).catch(error => {
-    console.error("Error:", error);
-  });
-}
-
+ 
 function handleClearButton(clearButtonName: string, navigationStack: any[], metaDataName: string, currentItems: any[], rootItems: any[], dataName: string, backButtonID: string, menuContainerID: string, selectedItems: Set<any>, selectedItemsContainer: string, listTypeName: string) {
   const btn = document.getElementById(clearButtonName)
   if (!btn) return
@@ -507,7 +425,7 @@ function uncheckCheckbox(tag: string) {
 }
 
 async function checkIfHasSubCategory(tag: string) {
-  const response = await fetch('http://localhost:8083/database/checkMetaDataSubCategory', {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/database/checkMetaDataSubCategory`, {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded"
@@ -519,7 +437,7 @@ async function checkIfHasSubCategory(tag: string) {
 }
 
 async function fetchSubCategories(tag: string, metaDataName: string) {
-  const response = await fetch(`http://localhost:8083/database/getMetaDataSubCategory/${tag}/${metaDataName}`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/database/getMetaDataSubCategory/${tag}/${metaDataName}`, {
     headers: { 'Accept': 'application/json' }
   });
   return await response.json();

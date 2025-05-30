@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import {updatePagination} from '../pagination';
-import {soundList} from '../soundList'
 
 export function profileContent(){
     useEffect(() => {
@@ -48,7 +47,7 @@ function loadFavourites(userID: string, containerID: string, page = 1) {
             console.error(`${page} is not a number`);
             return;
         }
-        fetch(`http://localhost:8083/loadFavourites/${userID}?page=${page}`, {
+        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/loadFavourites/${userID}?page=${page}`, {
             headers: {
                 'Accept': 'application/json'
             },
@@ -63,7 +62,7 @@ function loadFavourites(userID: string, containerID: string, page = 1) {
     
             const sounds = data.sounds || [];
             const length = data.length || 0
-            soundList(containerID, sounds)
+            //soundList(containerID, sounds)
     
             window.history.pushState({page: page}, `Page ${page}`, `?page=${page}`);
     
@@ -82,7 +81,7 @@ async function loadPlaylists(containerID: string) {
     const container = document.getElementById(containerID)
     if (container) {
         container.innerHTML = ``;
-        const response = await fetch('http://localhost:8083/database/userPlaylistIDs', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/database/userPlaylistIDs`, {
             headers: {
                 'Accept': 'application/json'
             },
@@ -99,7 +98,7 @@ async function loadPlaylists(containerID: string) {
             const card = document.createElement("div");
 
             card.innerHTML = `
-                <a href="http://localhost:8083/playlist/${item.playlistID}">
+                <a href="${process.env.NEXT_PUBLIC_BACKEND_URL}/playlist/${item.playlistID}">
                     <h3  id="${item.playlistID}">${item.name}</h3>
                 </a>
             `;
@@ -110,7 +109,7 @@ async function loadPlaylists(containerID: string) {
 }
 
 export function setUserInfos(userID: string, profileImageDivID: string, nameDivID: string, backgroundImageDivID: string) {
-    fetch(`http://localhost:8083/database/basicUser/${userID}`)
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/database/basicUser/${userID}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Basic user error');

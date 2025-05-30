@@ -166,7 +166,7 @@ export function SoundCard({ sound }: { sound: Sound }) {
                             otherIcon.setAttribute('data-lucide', 'play');
                         }
                     });
-                    const src = `http://localhost:4000/api/stream/sound/${encodeURIComponent(sound.soundID)}`;
+                    const src = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/stream/sound/${encodeURIComponent(sound.soundID)}`;
                     mainWaveSurfer?.load(src)
                     const wrapper = mainWaveSurfer?.getWrapper()
 
@@ -204,6 +204,10 @@ export function SoundCard({ sound }: { sound: Sound }) {
 
     addTempSoundID(sound.soundID)
 
+    const artistArray = typeof sound.artistIDs === 'string'
+        ? JSON.parse(sound.artistIDs)
+        : sound.artistIDs;
+
     return (
         <div style={{ border: '1px solid gray', padding: '10px', marginBottom: '10px' }}>
             <div style={{ display: 'flex', gap: '20px' }}>
@@ -226,7 +230,9 @@ export function SoundCard({ sound }: { sound: Sound }) {
                 <p>Enstrümanlar: {sound.instruments.join(', ')}</p>
                 <p>Süre: {sound.duration} saniye</p>
                 <p>BPM: {sound.bpm ?? 'Bilinmiyor'}</p>
-                <p>Sanatçılar: {sound.artistInfos.map((a) => a.name).join(', ')}</p>
+                <p>Sanatçılar: {
+                    artistArray.map((a: { name: string }) => a.name).join(', ')
+                }</p>
             </div>
             <div id={`div_${sound.soundID}`} ref={waveContainerRef}></div>
         </div>
@@ -273,7 +279,7 @@ export async function fetchSounds(page: number, categoryTag: string | null = nul
         }
     }
 
-    const res = await fetch(`http://localhost:4000/api/database/filterSounds?page=${page}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/filterSounds?page=${page}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -305,7 +311,7 @@ export const fetchAudio = async (
 ): Promise<void> => {
     try {
         const response = await fetch(
-            `http://localhost:4000/api/stream/sound/${encodeURIComponent(soundID)}`,
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/stream/sound/${encodeURIComponent(soundID)}`,
             { signal }
         );
 
