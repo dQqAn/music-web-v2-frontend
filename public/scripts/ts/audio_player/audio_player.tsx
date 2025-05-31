@@ -225,7 +225,7 @@ export function audioPlayer() {
                         return
                     }
 
-                    const url = `/download/loop/${soundID}?start=${start}&end=${end}`
+                    const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/download/loop/${soundID}?start=${start}&end=${end}`
                     window.open(url, "_blank")
                 } catch (error) {
                     console.log("SoundID error")
