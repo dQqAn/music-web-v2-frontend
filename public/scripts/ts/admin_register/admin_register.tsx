@@ -21,7 +21,7 @@ document.getElementById("staffForm")?.addEventListener("submit", async (event) =
         };
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/admin/register`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/admin/register`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

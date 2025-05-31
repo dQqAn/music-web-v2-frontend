@@ -40,7 +40,7 @@ export default function Dashboard() {
       <button onClick={() => window.location.href = '/profile/admin'}>Profile</button>
       <button onClick={() => window.location.href = '/profile/admin/register'}>Register</button>
       <button onClick={() => window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/logout`}>Logout</button>
-      <button onClick={() => window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/admin/metaDataSave`}>MetaDataSave</button>
+      <button onClick={() => window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/admin/metaDataSave`}>MetaDataSave</button>
     </div>
   )
 }

@@ -81,7 +81,7 @@ async function loadPlaylists(containerID: string) {
     const container = document.getElementById(containerID)
     if (container) {
         container.innerHTML = ``;
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/database/userPlaylistIDs`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/userPlaylistIDs`, {
             headers: {
                 'Accept': 'application/json'
             },
@@ -109,7 +109,7 @@ async function loadPlaylists(containerID: string) {
 }
 
 export function setUserInfos(userID: string, profileImageDivID: string, nameDivID: string, backgroundImageDivID: string) {
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/database/basicUser/${userID}`)
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/basicUser/${userID}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Basic user error');

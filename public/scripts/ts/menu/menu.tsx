@@ -425,7 +425,7 @@ function uncheckCheckbox(tag: string) {
 }
 
 async function checkIfHasSubCategory(tag: string) {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/database/checkMetaDataSubCategory`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/checkMetaDataSubCategory`, {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded"
@@ -437,7 +437,7 @@ async function checkIfHasSubCategory(tag: string) {
 }
 
 async function fetchSubCategories(tag: string, metaDataName: string) {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/database/getMetaDataSubCategory/${tag}/${metaDataName}`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/getMetaDataSubCategory/${tag}/${metaDataName}`, {
     headers: { 'Accept': 'application/json' }
   });
   return await response.json();

@@ -116,7 +116,7 @@ export function audioPlayer() {
             if (!soundID) {
                 console.warn(`soundID is missing, cannot load track. ${soundID}`);
             } else if (playlistID) {
-                fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/database/playlistSoundIDs/${playlistID}`)
+                fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/playlistSoundIDs/${playlistID}`)
                     .then(res => {
                         if (!res.ok) {
                             console.error('playlistSoundIDs error')

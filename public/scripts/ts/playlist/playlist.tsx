@@ -22,7 +22,7 @@ export function playlistContent() {
 }
 async function playlistSounds(page = 1, playlistID: string) {
     useEffect(() => {
-        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/database/userPlaylist/${playlistID}?page=${page}`, {
+        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/userPlaylist/${playlistID}?page=${page}`, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -57,7 +57,7 @@ async function playlistSounds(page = 1, playlistID: string) {
 
 /*async function playlistSize(playlistID) {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/database/userPlaylistSize/${playlistID}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/userPlaylistSize/${playlistID}`, {
             headers: {
                 'Content-Type': 'application/json',
             },
