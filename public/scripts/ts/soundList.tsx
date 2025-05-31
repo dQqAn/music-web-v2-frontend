@@ -120,7 +120,7 @@ export function handlePlaylistIDToStorage(playlistID: string | null) {
 //endregion
 
 export async function downloadSound(soundID: string, stems = false, stemPath = "", stretchedSound = false, duration = 0) {
-    const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/download/sound/${encodeURIComponent(soundID)}?stems=${stems}&stemPath=${stemPath}&stretchedSound=${stretchedSound}&duration=${duration}`;
+    const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/download/sound/${encodeURIComponent(soundID)}?stems=${stems}&stemPath=${stemPath}&stretchedSound=${stretchedSound}&duration=${duration}`;
 
     const response = await fetch(url);
     if (!response.ok) {

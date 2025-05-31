@@ -17,7 +17,7 @@ export function headerContent() {
                     }
 
                     try {
-                        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/search?query=${encodeURIComponent(query)}`);
+                        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/search?query=${encodeURIComponent(query)}`);
                         if (!response.ok) {
                             resultsDiv.innerHTML = "<p style='color: red;'>Error while searching.</p>";
                             return;

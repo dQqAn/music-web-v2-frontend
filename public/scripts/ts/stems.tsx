@@ -40,7 +40,7 @@ export function createStemsContent(soundID: string) {
 
     stemsOverlay.style.display = 'block';
 
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/database/soundStems/${soundID}`, {
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/soundStems/${soundID}`, {
         headers: {
             'Accept': 'application/json'
         }
