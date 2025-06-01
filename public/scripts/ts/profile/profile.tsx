@@ -47,7 +47,7 @@ function loadFavourites(userID: string, containerID: string, page = 1) {
             console.error(`${page} is not a number`);
             return;
         }
-        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/loadFavourites/${userID}?page=${page}`, {
+        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/loadFavourites/${userID}?page=${page}`, {
             headers: {
                 'Accept': 'application/json'
             },

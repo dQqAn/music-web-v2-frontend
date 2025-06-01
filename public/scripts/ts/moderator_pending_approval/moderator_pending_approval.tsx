@@ -10,7 +10,7 @@ function getSounds(page: number) {
             throw new Error('page is not an int');
         }
 
-        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/database/moderatorSounds?page=${tempPage}`, {
+        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/moderatorSounds?page=${tempPage}`, {
             headers: {
                 'Accept': 'application/json'
             },
@@ -122,7 +122,7 @@ document.getElementById('submitButton')?.addEventListener('click', async () => {
             }
 
             try {
-                const response = await fetch('${process.env.NEXT_PUBLIC_BACKEND_URL}/database/moderatorSounds', {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/moderatorSounds`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ soundIDs: selectedSoundIds }),

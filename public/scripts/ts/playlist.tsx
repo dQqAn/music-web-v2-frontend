@@ -31,7 +31,7 @@ async function showPlaylists(playlistResult: string, id = "") {
             playlistDiv.innerHTML = ``;
 
             const handleShowPlaylists = async () => {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/database/user_playlist?soundID=${soundID}`, {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/user_playlist?soundID=${soundID}`, {
                     credentials: 'include'
                 });
                 if (!response.ok) {
@@ -119,7 +119,7 @@ async function handlePlaylistInput(event: Event, id = "", playlistResult: string
             if (!playlistDiv) return;
             try {
                 playlistDiv.innerHTML = ``;
-                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/database/search_user_playlist?query=${encodeURIComponent(query)}&soundID=${soundID}`,
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/search_user_playlist?query=${encodeURIComponent(query)}&soundID=${soundID}`,
                     {
                         signal,
                         credentials: "include"
@@ -175,7 +175,7 @@ async function addSound(soundIDs: string[], playlistResult: string, id = "") {
     const cleanedUnselected = newUnselected.map(id => id.replace("playlist-checkbox-", ""));
 
     if (newSelected.length !== 0 || newUnselected.length !== 0) {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/database/soundsToPlaylist`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/soundsToPlaylist`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -216,7 +216,7 @@ async function handleCheckboxes(event: Event) {
 async function createPlaylist(playlistInput: string, playlistResult: string, id = "") {
     const value = (document.getElementById(playlistInput) as HTMLInputElement).value;
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/database/createPlaylist`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/createPlaylist`, {
         method: "POST",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"

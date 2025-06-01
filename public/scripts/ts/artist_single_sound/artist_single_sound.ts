@@ -203,7 +203,7 @@ export function artistSingleSound() {
 
                     if (!text) return;
 
-                    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/searchArtist?query=${encodeURIComponent(text)}`, {
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/searchArtist?query=${encodeURIComponent(text)}`, {
                         credentials: 'include'
                     });
 
