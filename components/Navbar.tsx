@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import CustomButton from './button/CustomButton';
-import styles from './Navbar.module.css'
+import styles from '@/public/styles/navbar.module.css'
 import UserSection from './UserSection';
 
 export default function Navbar() {

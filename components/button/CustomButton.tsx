@@ -1,6 +1,6 @@
 'use client'
 
-import styles from './CustomButton.module.css'
+import styles from '@/public/styles/button.module.css'
 
 interface CustomButtonProps {
   text?: string
