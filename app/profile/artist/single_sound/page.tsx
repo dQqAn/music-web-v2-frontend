@@ -2,7 +2,6 @@
 
 import { audioPlayer } from "@/public/scripts/ts/audio_player/audio_player";
 import { waveformPlayer } from "@/public/scripts/ts/audio_player/audio_player";
-import styles from "../../../page.module.css";
 import "@/public/styles/artist_single_sound.css"
 import "@/public/scripts/ts/artist_single_sound/artist_single_sound"
 import { artistSingleSound } from "@/public/scripts/ts/artist_single_sound/artist_single_sound";

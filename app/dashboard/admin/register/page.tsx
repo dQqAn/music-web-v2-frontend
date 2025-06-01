@@ -25,6 +25,7 @@ export default function Register() {
                     setIsLoading(false)
                 }
             } catch (err) {
+                console.log(err)
                 router.push('/')
             }
         }

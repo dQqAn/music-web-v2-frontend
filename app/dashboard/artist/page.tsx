@@ -23,6 +23,7 @@ export default function Dashboard() {
           setIsLoading(false)
         }
       } catch (err) {
+        console.log(err)
         router.push('/')
       }
     }
