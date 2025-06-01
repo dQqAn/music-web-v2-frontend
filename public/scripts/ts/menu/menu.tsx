@@ -1,7 +1,4 @@
 import { useEffect } from 'react';
-import type { Sound, SoundListWithSize } from '../../../types/sound'
-import { updatePagination } from '../pagination';
-import { fetchSounds, SoundList } from '../../newSoundList';
 
 export function useUIInteractions() {
   useEffect(() => {

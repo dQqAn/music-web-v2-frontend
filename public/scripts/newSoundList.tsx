@@ -7,7 +7,7 @@ import CustomButton from "@/components/button/CustomButton"
 import WaveSurfer from "wavesurfer.js"
 import { formatTime, mainWaveSurfer } from "./ts/audio_player/audio_player"
 
-export function SoundList() {
+export function SoundList({ categoryTag, artistID, source }: { categoryTag: string | null, artistID: string | null, source: string | null }) {
     const [sounds, setSounds] = useState<Sound[]>([])
     const [totalCount, setTotalCount] = useState(0)
     const [page, setPage] = useState(1)
@@ -21,7 +21,7 @@ export function SoundList() {
         abortRef.current = controller
 
         setSounds([])
-        fetchSounds(page, null, null, null, controller.signal)
+        fetchSounds(page, categoryTag, artistID, source, controller.signal)
             .then(({ sounds, length }) => {
                 setSounds(sounds)
                 setTotalCount(length)
@@ -62,7 +62,7 @@ export function SoundList() {
     )
 }
 
-export function SoundListView({ sounds }: { sounds: Sound[] }) {
+function SoundListView({ sounds }: { sounds: Sound[] }) {
     if (!Array.isArray(sounds) || sounds.length === 0) {
         return <div></div>
     }
@@ -76,7 +76,7 @@ export function SoundListView({ sounds }: { sounds: Sound[] }) {
     )
 }
 
-export function SoundCard({ sound }: { sound: Sound }) {
+function SoundCard({ sound }: { sound: Sound }) {
     const waveSurferRef = useRef<WaveSurfer | null>(null)
     const waveContainerRef = useRef<HTMLDivElement | null>(null)
     const onClickRef = useRef<() => void>(() => { })
@@ -225,9 +225,30 @@ export function SoundCard({ sound }: { sound: Sound }) {
                     <p id={`time_${sound.soundID}`}>0:00</p>
                     <p id={`duration_${sound.soundID}`}>0:00</p>
                 </div>
-                <p>Kategoriler: {sound.categories.join(', ')}</p>
-                <p>Modlar: {sound.moods.join(', ')}</p>
-                <p>Enstrümanlar: {sound.instruments.join(', ')}</p>
+                <p>
+                    Kategoriler: {sound.categories.map((category, index) => (
+                        <span key={category}>
+                            <a href={`/category/${encodeURIComponent(category)}__category`}>{category}</a>
+                            {index < sound.categories.length - 1 && ', '}
+                        </span>
+                    ))}
+                </p>
+                <p>
+                    Modlar: {sound.moods.map((mood, index) => (
+                        <span key={mood}>
+                            <a href={`/category/${encodeURIComponent(mood)}__mood`}>{mood}</a>
+                            {index < sound.moods.length - 1 && ', '}
+                        </span>
+                    ))}
+                </p>
+                <p>
+                    Enstrümanlar: {sound.instruments.map((instrument, index) => (
+                        <span key={instrument}>
+                            <a href={`/category/${encodeURIComponent(instrument)}__instrument`}>{instrument}</a>
+                            {index < sound.instruments.length - 1 && ', '}
+                        </span>
+                    ))}
+                </p>
                 <p>Süre: {sound.duration} saniye</p>
                 <p>BPM: {sound.bpm ?? 'Bilinmiyor'}</p>
                 <p>Sanatçılar: {
@@ -239,7 +260,7 @@ export function SoundCard({ sound }: { sound: Sound }) {
     )
 }
 
-export async function fetchSounds(page: number, categoryTag: string | null = null, artistID: string | null = null, source: string | null = null, signal?: AbortSignal): Promise<SoundListWithSize> {
+async function fetchSounds(page: number, categoryTag: string | null = null, artistID: string | null = null, source: string | null = null, signal?: AbortSignal): Promise<SoundListWithSize> {
     let minDuration = null
     let maxDuration = null
     if (isDurationChanged) {

@@ -8,7 +8,7 @@ import styles from "../../../page.module.css"
 import "@/public/styles/admin_register.css";
 import { useAdminRegister } from '@/public/scripts/ts/admin_register/admin_register'
 
-export default function Dashboard() {
+export default function Register() {
     const [isLoading, setIsLoading] = useState(true)
     const router = useRouter()
 

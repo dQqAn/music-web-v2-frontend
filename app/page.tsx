@@ -80,7 +80,7 @@ export default function Home() {
           </div>
 
           <div style={{ width: '100%' }} id="soundList">
-            <SoundList />
+            <SoundList categoryTag={null} artistID={null} source={null} />
           </div>
 
           <div id="pagination" className={styles.pagination}></div>
