@@ -1,0 +1,79 @@
+#staffForm {
+    width: 100%;
+    max-width: 400px;
+    margin: 40px auto;
+    padding: 24px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+    background-color: #fafafa;
+    color: black;
+}
+
+#staffForm label {
+    display: block;
+    margin-top: 16px;
+    font-weight: bold;
+}
+
+#staffForm input[type="email"],
+#staffForm input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 6px;
+    box-sizing: border-box;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+#staffForm p {
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+#staffForm label input[type="radio"] {
+    margin-right: 8px;
+    margin-top: 10px;
+}
+
+#staffForm button {
+    display: block;
+    margin-top: 24px;
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #0066cc;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#staffForm button:hover {
+    background-color: #004999;
+}
+
+#databaseMessage,
+#roleError,
+#errorRegister {
+    margin-top: 16px;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+#databaseMessage {
+    background-color: #e0ffe0;
+    color: #007700;
+}
+
+#roleError {
+    background-color: #fff0e0;
+    color: #cc3300;
+}
+
+#errorRegister {
+    background-color: #ffe0e0;
+    color: #990000;
+}

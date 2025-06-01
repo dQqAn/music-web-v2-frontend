@@ -1,10 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import styles from "./page.module.css";
-import { useDropdownToggle } from './menu/useDropdownToggle'
 import { useUIInteractions } from '../public/scripts/ts/menu/menu';
-import { Sound } from '@/public/types/sound';
 import { audioPlayer, waveformPlayer } from '@/public/scripts/ts/audio_player/audio_player';
 import { SoundList } from '@/public/scripts/newSoundList';
 
