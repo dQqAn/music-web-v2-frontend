@@ -1,7 +1,81 @@
+import { Sound, SoundListWithSize } from "@/public/types/sound";
 import { updatePagination } from "../pagination";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import { SoundListView } from "../../newSoundList";
 
-export function playlistContent() {
+export function PlaylistSounds({ playlistID }: { playlistID: string }) {
+    const [sounds, setSounds] = useState<Sound[]>([])
+    const [totalCount, setTotalCount] = useState(0)
+    const [page, setPage] = useState(1)
+
+    const abortRef = useRef<AbortController | null>(null)
+    const pageRef = useRef(page)
+
+    const handleLoadSounds = (page: number) => {
+        abortRef.current?.abort()
+        const controller = new AbortController()
+        abortRef.current = controller
+
+        setSounds([])
+        playlistSounds(playlistID, page, controller.signal)
+            .then(({ sounds, length }) => {
+                setSounds(sounds)
+                setTotalCount(length)
+                window.history.pushState({ page: page }, `Page ${page}`, `?page=${page}`);
+                const totalPages = Math.ceil(length / 10);
+                updatePagination("pagination", page, totalPages, (p: number) => {
+                    setPage(p);
+                })
+            })
+            .catch((err) => {
+                if (err.name === "AbortError") {
+                    console.log("fetch iptal edildi")
+                } else {
+                    console.error("fetch hatası", err)
+                }
+            })
+            .finally(() => { abortRef.current = null })
+    }
+
+    useEffect(() => { pageRef.current = page }, [page])
+
+    useEffect(() => {
+        const listener = () => {
+            handleLoadSounds(pageRef.current)
+        }
+        window.addEventListener('refreshSounds', listener)
+        return () => {
+            window.removeEventListener('refreshSounds', listener)
+        }
+    }, [])
+
+    useEffect(() => {
+        handleLoadSounds(page)
+    }, [page])
+
+    return (
+        <SoundListView sounds={sounds} />
+    )
+}
+
+async function playlistSounds(playlistID: string, page: number = 1, signal?: AbortSignal): Promise<SoundListWithSize> {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/userPlaylist/${playlistID}?page=${page}`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: "include",
+        signal: signal
+    })
+
+    if (!res.ok) {
+        throw new Error('Failed to fetch sounds')
+    }
+
+    const data: SoundListWithSize = await res.json()
+    return data
+}
+
+/*export function playlistContent() {
     useEffect(() => {
         const pathSegments = window.location.pathname.split('/');
         const playlistID = pathSegments[2];
@@ -19,65 +93,4 @@ export function playlistContent() {
         }
         handlePlaylistSounds();
     }, [])
-}
-async function playlistSounds(page = 1, playlistID: string) {
-    useEffect(() => {
-        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/userPlaylist/${playlistID}?page=${page}`, {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }).then(res => {
-            if (!res.ok) {
-                console.log(`HTTP error! Status: ${res.status}`);
-                throw new Error(`HTTP error! Status: ${res.status}`);
-            }
-            return res.json();
-        }).then(async data => {
-            const sounds = data.sounds || [];
-            const length = data.length || 0
-
-            try {
-                //await soundList('soundList', sounds)
-            } catch (error) {
-                console.error('soundList Error:', error);
-                throw error;
-            }
-
-            window.history.pushState({ page: page }, `Page ${page}`, `?page=${page}`);
-
-            const totalPages = Math.floor((length + 10 - 1) / 10);
-            updatePagination("pagination", page, totalPages, (p: number) => {
-                playlistSounds(p, playlistID);
-            });
-        }).catch(error => {
-            console.error("Error:", error);
-        });
-    }, [])
-}
-
-/*async function playlistSize(playlistID) {
-    try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/userPlaylistSize/${playlistID}`, {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-
-        if (!response.ok) {
-            console.error(`HTTP error! Status: ${response.status}`);
-            return null;
-        }
-
-        const data = await response.text();
-        const integerValue = parseInt(data);
-
-        if (isNaN(integerValue)) {
-            console.error(`${integerValue} is not a number`);
-            return null;
-        }
-        return integerValue;
-    } catch (error) {
-        console.error('Error:', error);
-        throw error;
-    }
 }*/

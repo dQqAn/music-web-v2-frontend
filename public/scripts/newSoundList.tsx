@@ -62,7 +62,7 @@ export function SoundList({ categoryTag, artistID, source }: { categoryTag: stri
     )
 }
 
-function SoundListView({ sounds }: { sounds: Sound[] }) {
+export function SoundListView({ sounds }: { sounds: Sound[] }) {
     if (!Array.isArray(sounds) || sounds.length === 0) {
         return <div></div>
     }
