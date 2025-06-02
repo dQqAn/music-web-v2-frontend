@@ -2,6 +2,8 @@ import WaveSurfer from 'wavesurfer.js'
 import { clearAllSelections, filterMenu, renderMenu } from "../menu/menu";
 import { useEffect } from 'react';
 import { analyzeBPMFromFile } from '@/lib/sound/analyzeBPMFromFile';
+import { stretchAudio } from '@/lib/stretchAudio'
+import { getMp3DurationInSeconds, getAudioDurationInSeconds } from '@/lib/audioUtils'
 
 function formSubmit() {
     document.getElementById("uploadForm")?.addEventListener("submit", async (event) => {
@@ -27,20 +29,6 @@ function formSubmit() {
         formData.append("name", soundName.value);
         formData.append("bpm", bpm.toString());
 
-        /*const file = soundInput.files?.[0];
-        const buffer = await file.arrayBuffer();
-        const newFile = new File([buffer], "audio.wav", { type: file.type });
-        const stretched = await stretchAudio(newFile, 60);
-        console.log("stretched: ", stretched);
-        const url = URL.createObjectURL(stretched);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = stretched.name;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);*/
-
         let categorySelectedTags = [...categorySelectedItems]
             .filter((item: any) => item.source === 'category' && item.tag && item.name)
             .map((item: any) => ({
@@ -59,9 +47,29 @@ function formSubmit() {
         formData.append("loops", JSON.stringify(loops));
         formData.append("selectedArtists", JSON.stringify(selectedArtists));
 
-        stemEntries.forEach(entry => {
+        stemEntries.forEach(async entry => {
+            const file = entry.files[0];
+            const buffer = await file.arrayBuffer();
+            const newFile = new File([buffer], "audio.wav", { type: file.type });
+
+            const soundFilePath = URL.createObjectURL(newFile);
+
+            let duration = 0
+            duration = file.name.endsWith('.mp3')
+                ? await getMp3DurationInSeconds(soundFilePath)
+                : await getAudioDurationInSeconds(soundFilePath);
+            duration = duration === -1 ? 0 : duration
+
+            const stretched = await stretchAudio(newFile, duration);
+
+            if (duration === -1) {
+                formData.append("stemFiles[]", entry.files[0]);
+            } else {
+                formData.append("stemFiles[]", stretched);
+            }
             formData.append("stemNames[]", entry.name);
-            formData.append("stemFiles[]", entry.files[0]);
+
+            URL.revokeObjectURL(soundFilePath);
         });
 
         fileInfo.style.display = "none";
