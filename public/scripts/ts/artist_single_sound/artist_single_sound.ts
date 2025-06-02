@@ -3,7 +3,7 @@ import { clearAllSelections, filterMenu, renderMenu } from "../menu/menu";
 import { useEffect } from 'react';
 import { analyzeBPMFromFile } from '@/lib/sound/analyzeBPMFromFile';
 import { stretchAudio } from '@/lib/stretchAudio'
-import { getMp3DurationInSeconds, getAudioDurationInSeconds } from '@/lib/audioUtils'
+import { getAudioDurationInSeconds } from '@/lib/audioUtils'
 
 function formSubmit() {
     document.getElementById("uploadForm")?.addEventListener("submit", async (event) => {
@@ -55,9 +55,7 @@ function formSubmit() {
             const soundFilePath = URL.createObjectURL(newFile);
 
             let duration = 0
-            duration = file.name.endsWith('.mp3')
-                ? await getMp3DurationInSeconds(soundFilePath)
-                : await getAudioDurationInSeconds(soundFilePath);
+            duration = await getAudioDurationInSeconds(soundFilePath)
             duration = duration === -1 ? 0 : duration
 
             const stretched = await stretchAudio(newFile, duration);
