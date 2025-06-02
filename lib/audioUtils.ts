@@ -1,5 +1,6 @@
 import { parseFile } from 'music-metadata';
-import mp3Duration from 'mp3-duration';
+
+const mp3Duration = require('mp3-duration') as (file: string | Buffer) => Promise<number>;
 
 export const getAudioDurationInSeconds = async (
     file: string,
