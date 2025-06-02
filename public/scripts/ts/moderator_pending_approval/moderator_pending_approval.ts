@@ -78,41 +78,18 @@ function getSounds(page: number) {
 
 export function moderatorPendingApprovalContent() {
     getSounds(1)
+    submitButton()
 }
-
-/*async function soundsCount() {
-    try {
-        const response = await fetch("${process.env.NEXT_PUBLIC_BACKEND_URL}/database/moderator_sounds_count", {});
-        if (!response.ok) {
-            console.error(`HTTP error! Status: ${response.status}`);
-            return null;
-        }
-
-        const data = await response.text();
-        const integerValue = parseInt(data);
-
-        if (isNaN(integerValue)) {
-            console.error(`${integerValue} is not a number`);
-            return null;
-        }
-        return integerValue;
-    } catch (error) {
-        console.error('Error:', error);
-        throw error;
-    }
-}*/
 
 function getSelectedSoundIds() {
     const checkboxes = document.querySelectorAll('.sound-checkbox:checked');
     return Array.from(checkboxes).map(cb => cb.getAttribute('data-sound-id'));
 }
 
-document.getElementById('submitButton')?.addEventListener('click', async () => {
-    const button = document.getElementById('submitButton');
-    if (!button) return;
+function submitButton() {
     useEffect(() => {
         const handleClick = async () => {
-            const selectedSoundIds = getSelectedSoundIds();
+            const selectedSoundIds = getSelectedSoundIds()
 
             if (selectedSoundIds.length === 0) {
                 alert('Please select min one item!');
@@ -131,23 +108,23 @@ document.getElementById('submitButton')?.addEventListener('click', async () => {
                     throw new Error('Error backend');
                 }
 
-                const result = await response.text();
+                //const result = await response.text();
 
                 const urlParams = new URLSearchParams(window.location.search);
                 const page = parseInt(urlParams.get("page") || "1");
                 getSounds(page);
+
             } catch (error: any) {
                 console.error('Error:', error);
                 alert('Error: ' + error.message);
             }
         };
 
-        button.addEventListener('click', handleClick);
+        const button = document.getElementById('submitButton');
+        button?.addEventListener('click', handleClick);
 
         return () => {
-            button.removeEventListener('click', handleClick);
+            button?.removeEventListener('click', handleClick);
         };
-    }, [])
-
-
-});
+    }, []);
+}
