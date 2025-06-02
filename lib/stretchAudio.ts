@@ -33,7 +33,7 @@ export async function stretchAudio(
   const receiver = new Float32Array(estLength);
 
   let received = 0;
-  const request = 4096;
+  //const request = 4096;
 
   while (st.outputBuffer.frameCount > 0) {
     const availableFrames = st.outputBuffer.frameCount;
