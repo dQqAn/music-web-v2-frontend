@@ -357,7 +357,7 @@ export function artistSingleSound() {
             endingTime.value = "0"
         })
 
-        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/allMetaData`)
+        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/allMetaData`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Menu loading error');
