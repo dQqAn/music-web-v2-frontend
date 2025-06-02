@@ -77,9 +77,7 @@ function getSounds(page: number) {
 }
 
 export function moderatorPendingApprovalContent() {
-    useEffect(() => {
-        getSounds(1)
-    }, [])
+    getSounds(1)
 }
 
 /*async function soundsCount() {
