@@ -27,6 +27,20 @@ function formSubmit() {
         formData.append("name", soundName.value);
         formData.append("bpm", bpm.toString());
 
+        /*const file = soundInput.files?.[0];
+        const buffer = await file.arrayBuffer();
+        const newFile = new File([buffer], "audio.wav", { type: file.type });
+        const stretched = await stretchAudio(newFile, 60);
+        console.log("stretched: ", stretched);
+        const url = URL.createObjectURL(stretched);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = stretched.name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);*/
+
         let categorySelectedTags = [...categorySelectedItems]
             .filter((item: any) => item.source === 'category' && item.tag && item.name)
             .map((item: any) => ({
