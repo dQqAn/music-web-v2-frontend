@@ -274,7 +274,7 @@ function deleteItemByTag(tag: string, selectedItems: Set<{ tag: string }>) {
     }
   }
 }
- 
+
 function handleClearButton(clearButtonName: string, navigationStack: any[], metaDataName: string, currentItems: any[], rootItems: any[], dataName: string, backButtonID: string, menuContainerID: string, selectedItems: Set<any>, selectedItemsContainer: string, listTypeName: string) {
   const btn = document.getElementById(clearButtonName)
   if (!btn) return
@@ -430,7 +430,7 @@ async function checkIfHasSubCategory(tag: string) {
     body: `key=${encodeURIComponent(tag)}`
   });
   const result = await response.json();
-  return result === true;
+  return result.control === true;
 }
 
 async function fetchSubCategories(tag: string, metaDataName: string) {
