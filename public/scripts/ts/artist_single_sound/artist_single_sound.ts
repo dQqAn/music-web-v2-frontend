@@ -53,10 +53,8 @@ function formSubmit() {
             const newFile = new File([buffer], "audio.wav", { type: file.type });
 
             const soundFilePath = URL.createObjectURL(newFile);
-
-            let duration = 0
-            duration = await getAudioDurationInSeconds(soundFilePath)
-            duration = duration === -1 ? 0 : duration
+            let duration = await getAudioDurationInSeconds(newFile);
+            duration = duration === -1 ? 0 : duration;
 
             const stretched = await stretchAudio(newFile, duration);
 
