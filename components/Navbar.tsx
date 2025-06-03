@@ -4,12 +4,15 @@ import { useRouter } from 'next/navigation'
 import CustomButton from './button/CustomButton';
 import styles from '@/public/styles/navbar.module.css'
 import UserSection from './UserSection';
+import { headerContent } from '@/public/scripts/ts/header';
 
 export default function Navbar() {
   const router = useRouter()
   const handleClick = (path: string) => {
     router.push(path)
   }
+
+  headerContent()
 
   return (
     <nav className={styles.nav}>
