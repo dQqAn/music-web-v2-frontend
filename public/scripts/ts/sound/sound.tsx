@@ -73,8 +73,10 @@ export function setSoundInfos(sound: any, soundImageDivID: string, soundNameDivI
     const artists = document.getElementById(artistsNameDivID)
 
     if (image) {
-        image.src = sound.image1Path;
-        (image as HTMLElement).style.display = 'flex';
+        image.style.width = '24px';
+        image.style.height = '24px';
+        image.style.objectFit = 'cover';
+        image.src = process.env.NEXT_PUBLIC_BACKEND_URL + sound.image1Path;
     }
 
     if (name) {

@@ -10,12 +10,15 @@ export default function Footer() {
         <div className={styles.footerStart}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
             <div >
+              <img id="mainSoundImage" src={undefined} alt="" />
+            </div>
+            <div >
               <p id="mainSoundName">Sound Name</p>
               <div id="mainArtistsName">Artist Name</div>
             </div>
           </div>
 
-          <div style={{display: 'flex', gap: 16}}>
+          <div style={{ display: 'flex', gap: 16 }}>
             <button id="musicBoxSkipBack">Back</button>
 
             <button id="musicBoxPlayPause">Play</button>
@@ -32,8 +35,8 @@ export default function Footer() {
         <div className={styles.footerCenter}>
           <div id="music_box" style={{ position: 'relative' }}>
             <div >
-              <div style={{display: 'flex', gap: 16}}>
-                <div style={{display: 'flex', gap: 4}}>
+              <div style={{ display: 'flex', gap: 16 }}>
+                <div style={{ display: 'flex', gap: 4 }}>
                   <p id="mainTime">0:00</p>
                   <span>/</span>
                   <p id="mainDuration">0:00</p>
@@ -61,7 +64,7 @@ export default function Footer() {
         </div>
 
         <div className={styles.footerEnd}>
-          <div id="soundOptionsToUser" style={{display: 'flex', gap: 16}}>
+          <div id="soundOptionsToUser" style={{ display: 'flex', gap: 16 }}>
             <button id="mainDownloadButton">D</button>
 
             <button id="openPlaylistButton">Queue</button>

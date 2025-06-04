@@ -50,9 +50,9 @@ export function createStemsContent(soundID: string) {
             throw new Error(`HTTP error! Status: ${res.status}`);
         }
         return res.json();
-    }).then(stems => {
-        if (stems.length > 0) {
-            stemsContent(stemsOverlayContent, stems, soundID, stemsListWaveSurfers, singleStemsListWaveSurfers, muteStemsListWaveSurfers)
+    }).then(data => {
+        if (data.stems.length > 0) {
+            stemsContent(stemsOverlayContent, data.stems, soundID, stemsListWaveSurfers, singleStemsListWaveSurfers, muteStemsListWaveSurfers)
         }
     })
 
@@ -96,9 +96,10 @@ async function stemsContent(stemsOverlayContent: any, stems: any, soundID: strin
     mainStemItem.style.width = '100%';
 
     const mainInfos = document.createElement('div')
+    mainInfos.style.color = 'black';
     mainInfos.innerHTML = `
                     <div>
-                        <div>
+                        <div style="width: 12px; height: 12px;">
                             <img id="stemSoundImage_${soundID}" src=""
                                   alt="">
                         </div>
@@ -145,7 +146,7 @@ async function stemsContent(stemsOverlayContent: any, stems: any, soundID: strin
     mainStemWaveSurfer.setMuted(true);
     stemsListWaveSurfers[soundID] = mainStemWaveSurfer
 
-    const src = `${process.env.NEXT_PUBLIC_BACKEND_URL}/stream/sound/${encodeURIComponent(soundID)}`;
+    const src = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/stream/sound/${encodeURIComponent(soundID)}`;
     mainStemWaveSurfer.load(src)
 
     const mainStemPlayButton = document.createElement('button')
@@ -256,7 +257,7 @@ async function stemsContent(stemsOverlayContent: any, stems: any, soundID: strin
             }
         });
 
-        const src = `${process.env.NEXT_PUBLIC_BACKEND_URL}/stream/sound/${encodeURIComponent(soundID)}?stems=true&stemPath=${stem.stemPath}`;
+        const src = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/stream/sound/${encodeURIComponent(soundID)}?stems=true&stemPath=${stem.stemPath}`;
         stemWaveSurfer.load(src)
         stemWaveSurfer.getWrapper().className = "stem_waveSurfer_" + soundID
 

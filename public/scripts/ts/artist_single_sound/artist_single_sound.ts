@@ -23,9 +23,10 @@ function formSubmit() {
             return;
         }
 
+        const soundFile = soundInput.files[0]
         const formData = new FormData();
         formData.append("image", imageInput.files[0]);
-        formData.append("sound", soundInput.files[0]);
+        formData.append("sound", soundFile);
         formData.append("name", soundName.value);
         formData.append("bpm", bpm.toString());
 
@@ -47,15 +48,15 @@ function formSubmit() {
         formData.append("loops", JSON.stringify(loops));
         formData.append("selectedArtists", JSON.stringify(selectedArtists));
 
-        stemEntries.forEach(async entry => {
+        for (const entry of stemEntries) {
             const file = entry.files[0];
             const buffer = await file.arrayBuffer();
             const newFile = new File([buffer], "audio.wav", { type: file.type });
 
-            const soundFilePath = URL.createObjectURL(newFile);
-            let duration = await getAudioDurationInSeconds(newFile);
+            let duration = await getAudioDurationInSeconds(soundFile);
             duration = duration === -1 ? 0 : duration;
 
+            const soundFilePath = URL.createObjectURL(newFile);
             const stretched = await stretchAudio(newFile, duration);
 
             if (duration === -1) {
@@ -64,9 +65,8 @@ function formSubmit() {
                 formData.append("stemFiles[]", stretched);
             }
             formData.append("stemNames[]", entry.name);
-
             URL.revokeObjectURL(soundFilePath);
-        });
+        }
 
         fileInfo.style.display = "none";
         errorInfo.style.display = "none";
