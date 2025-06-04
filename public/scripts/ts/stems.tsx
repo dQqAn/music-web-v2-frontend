@@ -290,12 +290,12 @@ async function stemsContent(stemsOverlayContent: any, stems: any, soundID: strin
             const basicWaveSurfers: any = Object.fromEntries(
                 Object.entries(stemsListWaveSurfers).filter(([key]) => key !== soundID)
             )
-            for (const key in basicWaveSurfers) {
+            /*for (const key in basicWaveSurfers) {
                 basicWaveSurfers[key].setMuted(true)
                 const myDiv = document.getElementById('div_' + key) as HTMLElement;
                 myDiv.style.backgroundColor = 'black';
                 myDiv.style.opacity = '0.6';
-            }
+            }*/
 
             let newWaveSurfers: any = {}
             if (Object.keys(singleStemsListWaveSurfers).length > 0) {
@@ -316,6 +316,18 @@ async function stemsContent(stemsOverlayContent: any, stems: any, soundID: strin
                 const myDiv = document.getElementById('div_' + key) as HTMLElement;
                 myDiv.style.backgroundColor = 'transparent';
                 myDiv.style.opacity = '1';
+            }
+
+            const mutedWaveSurfers: any = Object.fromEntries(
+                Object.entries(basicWaveSurfers).filter(([key]) => {
+                    return !(key in newWaveSurfers)
+                })
+            )
+            for (const key in mutedWaveSurfers) {
+                mutedWaveSurfers[key].setMuted(true)
+                const myDiv = document.getElementById('div_' + key) as HTMLElement;
+                myDiv.style.backgroundColor = 'black';
+                myDiv.style.opacity = '0.6';
             }
         });
 
@@ -336,12 +348,12 @@ async function stemsContent(stemsOverlayContent: any, stems: any, soundID: strin
             const basicWaveSurfers: any = Object.fromEntries(
                 Object.entries(stemsListWaveSurfers).filter(([key]) => key !== soundID)
             )
-            for (const key in basicWaveSurfers) {
+            /*for (const key in basicWaveSurfers) {
                 basicWaveSurfers[key].setMuted(true)
                 const myDiv = document.getElementById('div_' + key) as HTMLElement;
                 myDiv.style.backgroundColor = 'black';
                 myDiv.style.opacity = '0.6';
-            }
+            }*/
 
             let newWaveSurfers: any = {}
             if (Object.keys(singleStemsListWaveSurfers).length > 0) {
@@ -362,6 +374,18 @@ async function stemsContent(stemsOverlayContent: any, stems: any, soundID: strin
                 const myDiv = document.getElementById('div_' + key) as HTMLElement;
                 myDiv.style.backgroundColor = 'transparent';
                 myDiv.style.opacity = '1';
+            }
+
+            const mutedWaveSurfers: any = Object.fromEntries(
+                Object.entries(basicWaveSurfers).filter(([key]) => {
+                    return !(key in newWaveSurfers)
+                })
+            )
+            for (const key in mutedWaveSurfers) {
+                mutedWaveSurfers[key].setMuted(true)
+                const myDiv = document.getElementById('div_' + key) as HTMLElement;
+                myDiv.style.backgroundColor = 'black';
+                myDiv.style.opacity = '0.6';
             }
         });
 
