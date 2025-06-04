@@ -39,6 +39,12 @@ export function createStemsContent(soundID: string) {
     document.body.appendChild(stemsOverlay);
 
     stemsOverlay.style.display = 'block';
+    stemsOverlay.style.top = '0';
+    stemsOverlay.style.left = '0';
+    stemsOverlay.style.right = '0';
+    stemsOverlay.style.bottom = '0';
+    stemsOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.3)";
+    stemsOverlay.style.backdropFilter = "blur(4px)";
 
     fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/soundStems/${soundID}`, {
         headers: {
