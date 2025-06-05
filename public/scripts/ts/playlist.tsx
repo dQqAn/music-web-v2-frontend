@@ -262,5 +262,7 @@ export function setupPlaylistDiv(
                 (document.getElementById('mainPlaylistOverlay') as HTMLElement).style.display = 'none'
             }
         });
+    } else {
+        console.warn("You are not login. Active status: ", activeStatus)
     }
 }
