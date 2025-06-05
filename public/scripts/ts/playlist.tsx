@@ -258,7 +258,6 @@ export function setupPlaylistDiv(
         if (closeBtn && container) {
             closeBtn.onclick = () => {
                 if (overlay) {
-                    playlistDiv.innerHTML = ``;
                     container.style.display = "none";
                     overlay.style.display = 'none'
                 }
@@ -267,7 +266,6 @@ export function setupPlaylistDiv(
         window.addEventListener("click", function (e) {
             if (container && container.style.display === "block" && !container.contains(e.target as Node) && e.target !== playlistBtn) {
                 if (overlay) {
-                    playlistDiv.innerHTML = ``;
                     container.style.display = "none";
                     overlay.style.display = 'none'
                 }
