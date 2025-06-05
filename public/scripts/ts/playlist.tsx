@@ -39,37 +39,37 @@ async function showPlaylists(playlistResult: string, id = "") {
 
             const results = await response.json();
 
+            const overlay = document.getElementById('mainPlaylistOverlay')
+
             if (results.length !== 0) {
-                results.forEach((item: any, index: number) => {
-                    const input = document.createElement("input");
-                    input.type = "checkbox";
-                    input.id = "playlist-checkbox-" + item.playlist.playlistID
-
-                    const label = document.createElement("label");
-                    label.htmlFor = input.id;
-                    label.textContent = (index + 1) + ': ' + item.playlist.name;
-
-                    if (item.soundStatus) {
-                        input.checked = item.soundStatus;
-                        if (item.soundStatus && !selected.includes(item.playlist.playlistID)) {
-                            basicSelected.push(item.playlist.playlistID)
-                        }
-                    }
-
-                    const container = document.createElement("div");
-                    container.appendChild(input);
-                    container.appendChild(label);
-                    playlistDiv!.appendChild(container);
-                });
-
-                const overlay = document.getElementById('mainPlaylistOverlay')
 
                 if (playlistDiv!.innerHTML.trim() !== `` && overlay) {
+                    results.forEach((item: any, index: number) => {
+                        const input = document.createElement("input");
+                        input.type = "checkbox";
+                        input.id = "playlist-checkbox-" + item.playlist.playlistID
+
+                        const label = document.createElement("label");
+                        label.htmlFor = input.id;
+                        label.textContent = (index + 1) + ': ' + item.playlist.name;
+
+                        if (item.soundStatus) {
+                            input.checked = item.soundStatus;
+                            if (item.soundStatus && !selected.includes(item.playlist.playlistID)) {
+                                basicSelected.push(item.playlist.playlistID)
+                            }
+                        }
+
+                        const container = document.createElement("div");
+                        container.appendChild(input);
+                        container.appendChild(label);
+                        playlistDiv!.appendChild(container);
+                    });
+
                     playlistDiv!.style.display = "block";
                     overlay.style.display = 'block'
 
                     setupCheckboxListener(playlistResult);
-
                 }
             }
         }
@@ -156,9 +156,13 @@ async function handlePlaylistInput(event: Event, id = "", playlistResult: string
                 playlistDiv.appendChild(container);
             });
         } catch (error) {
-            playlistDiv.innerHTML = ``;
-            playlistDiv.style.display = "none";
-            (document.getElementById('mainPlaylistOverlay') as HTMLElement).style.display = 'none'
+            const overlay = document.getElementById('mainPlaylistOverlay')
+            if (overlay) {
+                playlistDiv.innerHTML = ``;
+                playlistDiv.style.display = "none";
+                overlay.style.display = 'none'
+            }
+
         }
     }
 
@@ -242,6 +246,8 @@ export function setupPlaylistDiv(
     const container = document.getElementById(playlistContainerID);
     const closeBtn = document.getElementById(playlistCloseBtnID);
 
+    const overlay = document.getElementById('mainPlaylistOverlay')
+
     if (playlistDiv && activeStatus) {
         playlistBtn.onclick = () => {
             togglePlaylist(playlistContainerID, playlistResultID, sound.soundID, playlistInputID)
@@ -254,16 +260,20 @@ export function setupPlaylistDiv(
         }
         if (closeBtn && container) {
             closeBtn.onclick = () => {
-                playlistDiv.innerHTML = ``;
-                container.style.display = "none";
-                (document.getElementById('mainPlaylistOverlay') as HTMLElement).style.display = 'none'
+                if (overlay) {
+                    playlistDiv.innerHTML = ``;
+                    container.style.display = "none";
+                    overlay.style.display = 'none'
+                }
             };
         }
         window.addEventListener("click", function (e) {
             if (container && container.style.display === "block" && !container.contains(e.target as Node) && e.target !== playlistBtn) {
-                playlistDiv.innerHTML = ``;
-                container.style.display = "none";
-                (document.getElementById('mainPlaylistOverlay') as HTMLElement).style.display = 'none'
+                if (overlay) {
+                    playlistDiv.innerHTML = ``;
+                    container.style.display = "none";
+                    overlay.style.display = 'none'
+                }
             }
         });
     } else {
