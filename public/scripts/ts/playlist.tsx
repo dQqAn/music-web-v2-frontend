@@ -42,35 +42,32 @@ async function showPlaylists(playlistResult: string, id = "") {
             const overlay = document.getElementById('mainPlaylistOverlay')
 
             if (results.length !== 0) {
+                results.forEach((item: any, index: number) => {
+                    const input = document.createElement("input");
+                    input.type = "checkbox";
+                    input.id = "playlist-checkbox-" + item.playlist.playlistID
 
-                if (playlistDiv!.innerHTML.trim() !== ``) {
-                    results.forEach((item: any, index: number) => {
-                        const input = document.createElement("input");
-                        input.type = "checkbox";
-                        input.id = "playlist-checkbox-" + item.playlist.playlistID
+                    const label = document.createElement("label");
+                    label.htmlFor = input.id;
+                    label.textContent = (index + 1) + ': ' + item.playlist.name;
 
-                        const label = document.createElement("label");
-                        label.htmlFor = input.id;
-                        label.textContent = (index + 1) + ': ' + item.playlist.name;
-
-                        if (item.soundStatus) {
-                            input.checked = item.soundStatus;
-                            if (item.soundStatus && !selected.includes(item.playlist.playlistID)) {
-                                basicSelected.push(item.playlist.playlistID)
-                            }
+                    if (item.soundStatus) {
+                        input.checked = item.soundStatus;
+                        if (item.soundStatus && !selected.includes(item.playlist.playlistID)) {
+                            basicSelected.push(item.playlist.playlistID)
                         }
+                    }
 
-                        const container = document.createElement("div");
-                        container.appendChild(input);
-                        container.appendChild(label);
-                        playlistDiv!.appendChild(container);
-                    });
+                    const container = document.createElement("div");
+                    container.appendChild(input);
+                    container.appendChild(label);
+                    playlistDiv!.appendChild(container);
+                });
 
-                    playlistDiv!.style.display = "block";
-                    overlay!.style.display = 'block'
+                playlistDiv!.style.display = "block";
+                overlay!.style.display = 'block'
 
-                    setupCheckboxListener(playlistResult);
-                }
+                setupCheckboxListener(playlistResult);
             }
         }
 
