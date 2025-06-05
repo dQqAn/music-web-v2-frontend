@@ -68,16 +68,16 @@ export function soundPage() {
 }
 
 export function setSoundInfos(sound: any, soundImageDivID: string, soundNameDivID: string, artistsNameDivID: string) {
-    const image = document.getElementById(soundImageDivID) as HTMLImageElement
+    //const image = document.getElementById(soundImageDivID) as HTMLImageElement
     const name = document.getElementById(soundNameDivID)
     const artists = document.getElementById(artistsNameDivID)
 
-    if (image) {
+    /*if (image) {
         image.style.width = '24px';
         image.style.height = '24px';
         image.style.objectFit = 'cover';
         image.src = process.env.NEXT_PUBLIC_BACKEND_URL + sound.image1Path;
-    }
+    }*/
 
     if (name) {
         name.innerHTML = `
