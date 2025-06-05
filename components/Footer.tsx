@@ -73,27 +73,56 @@ export default function Footer() {
 
             <div id="mainStretchDiv"></div>
 
-            <div id="mainPlaylistDiv" style={{ display: 'none' }}>
-              <button id="mainPlaylistBtn"></button>
+            <div id="mainPlaylistDiv">
+              <button id="mainPlaylistBtn">Playlist</button>
 
-              <div
-                id="mainPlaylistContainer" >
-                <div >
-                  <div >
-                    <button id="mainCreatePlaylist">Create Playlist</button>
-                    <input type="text" id="mainPlaylistInput" placeholder="Search"></input>
+              <div id='mainPlaylistOverlay' style={{
+                display: 'none',
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                backdropFilter: 'blur(4px)',
+                zIndex: 999,
+              }}>
 
+                <div
+                  id="mainPlaylistContainer"
+                  style={{
+                    display: 'none',
+                    position: 'fixed',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    border: '1px solid #ccc',
+                    zIndex: 1000,
+                    maxWidth: '90%',
+                    maxHeight: '80%',
+                    overflowY: 'auto',
+                    padding: '10px',
+                    backgroundColor: 'white',
+                    color: 'black'
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div >
+                      <button id="mainCreatePlaylist">Create Playlist</button>
+                      <input type="text" id="mainPlaylistInput" placeholder="Search"></input>
+
+                    </div>
+                    <div >
+                      <button id="mainPlaylistCloseBtn">X</button>
+                    </div>
                   </div>
-                  <div >
-                    <button id="mainPlaylistCloseBtn">
-                      X
-                    </button>
-                  </div>
+
+                  <div id="mainPlaylistResult" style={{ height: '60px' }}></div>
+                  <button id="mainAddToPlaylistBtn" style={{ width: '100%' }}>Submit</button>
                 </div>
 
-                <div id="mainPlaylistResult" ></div>
-                <button id="mainAddToPlaylistBtn">Submit</button>
               </div>
+
             </div>
           </div>
 

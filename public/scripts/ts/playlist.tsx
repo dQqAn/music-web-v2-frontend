@@ -18,63 +18,62 @@ let selected: string[] = [];
 let unSelected: string[] = [];
 
 async function showPlaylists(playlistResult: string, id = "") {
-    useEffect(() => {
-        basicSelected = [];
-        basicUnSelected = [];
-        selected = [];
-        unSelected = [];
-        const params = new URLSearchParams(window.location.search);
-        const soundID = params.get('soundID') ?? id;
-        const playlistDiv = document.getElementById(playlistResult);
-        if (!playlistDiv) return;
-        try {
-            playlistDiv.innerHTML = ``;
+    basicSelected = [];
+    basicUnSelected = [];
+    selected = [];
+    unSelected = [];
+    const params = new URLSearchParams(window.location.search);
+    const soundID = params.get('soundID') ?? id;
+    const playlistDiv = document.getElementById(playlistResult);
+    if (!playlistDiv) return;
+    try {
+        playlistDiv.innerHTML = ``;
 
-            const handleShowPlaylists = async () => {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/user_playlist?soundID=${soundID}`, {
-                    credentials: 'include'
-                });
-                if (!response.ok) {
-                    return;
-                }
-
-                const results = await response.json();
-
-                if (results.length === 0) {
-                    playlistDiv.innerHTML = "<p>No results found.</p>";
-                    return;
-                }
-
-                results.forEach((item: any) => {
-                    const input = document.createElement("input");
-                    input.type = "checkbox";
-                    input.id = "playlist-checkbox-" + item.playlist.playlistID
-
-                    const label = document.createElement("label");
-                    label.htmlFor = input.id;
-                    label.textContent = item.playlist.name;
-
-                    if (item.soundStatus) {
-                        input.checked = item.soundStatus;
-                        if (item.soundStatus && !selected.includes(item.playlist.playlistID)) {
-                            basicSelected.push(item.playlist.playlistID)
-                        }
-                    }
-
-                    const container = document.createElement("div");
-                    container.appendChild(input);
-                    container.appendChild(label);
-                    playlistDiv.appendChild(container);
-                });
-                playlistDiv.style.display = "block";
-                setupCheckboxListener(playlistResult);
+        const handleShowPlaylists = async () => {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/user_playlist?soundID=${soundID}`, {
+                credentials: 'include'
+            });
+            if (!response.ok) {
+                return;
             }
 
-            handleShowPlaylists();
-        } catch (error) {
-            console.log(error)
+            const results = await response.json();
+
+            if (results.length === 0) {
+                playlistDiv.innerHTML = "<p>No results found.</p>";
+                return;
+            }
+
+            results.forEach((item: any) => {
+                const input = document.createElement("input");
+                input.type = "checkbox";
+                input.id = "playlist-checkbox-" + item.playlist.playlistID
+
+                const label = document.createElement("label");
+                label.htmlFor = input.id;
+                label.textContent = item.playlist.name;
+
+                if (item.soundStatus) {
+                    input.checked = item.soundStatus;
+                    if (item.soundStatus && !selected.includes(item.playlist.playlistID)) {
+                        basicSelected.push(item.playlist.playlistID)
+                    }
+                }
+
+                const container = document.createElement("div");
+                container.appendChild(input);
+                container.appendChild(label);
+                playlistDiv.appendChild(container);
+            });
+            playlistDiv.style.display = "block";
+            (document.getElementById('mainPlaylistOverlay') as HTMLElement).style.display = 'block'
+            setupCheckboxListener(playlistResult);
         }
-    }, [])
+
+        handleShowPlaylists();
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 let playlistSearchTimeout: number | null = null;
@@ -96,75 +95,71 @@ function setupPlaylistInputListener(id: string, playlistInput: string, playlistR
 let currentPlaylistFetchController: AbortController | null = null;
 
 async function handlePlaylistInput(event: Event, id = "", playlistResult: string) {
-    useEffect(() => {
-        const handleInput = async () => {
-            const query = (event.target as HTMLInputElement).value;
+    const handleInput = async () => {
+        const query = (event.target as HTMLInputElement).value;
 
-            if (currentPlaylistFetchController) {
-                currentPlaylistFetchController.abort();
-            }
-
-            currentPlaylistFetchController = new AbortController();
-            const signal = currentPlaylistFetchController.signal;
-
-            if (query.length < 1) {
-                await showPlaylists(playlistResult, id)
-                return;
-            }
-            basicSelected = [];
-            basicUnSelected = [];
-            const params = new URLSearchParams(window.location.search);
-            const soundID = params.get('soundID') ?? id;
-            const playlistDiv = document.getElementById(playlistResult);
-            if (!playlistDiv) return;
-            try {
-                playlistDiv.innerHTML = ``;
-                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/search_user_playlist?query=${encodeURIComponent(query)}&soundID=${soundID}`,
-                    {
-                        signal,
-                        credentials: "include"
-                    });
-                if (!response.ok) {
-                    playlistDiv.innerHTML = "<p style='color: red;'>Error while searching.</p>";
-                    return;
-                }
-
-                const results = await response.json();
-                if (results.length === 0) {
-                    playlistDiv.innerHTML = "<p>No results found.</p>";
-                    return;
-                }
-
-                results.forEach((item: any) => {
-                    const input = document.createElement("input");
-                    input.type = "checkbox";
-                    input.id = "playlist-checkbox-" + item.playlist.playlistID
-
-                    const label = document.createElement("label");
-                    label.htmlFor = input.id;
-                    label.textContent = item.playlist.name;
-
-                    input.checked = item.soundStatus;
-                    if (item.soundStatus && !selected.includes(item.playlist.playlistID)) {
-                        basicSelected.push(item.playlist.playlistID)
-                    }
-
-                    const container = document.createElement("div");
-                    container.appendChild(input);
-                    container.appendChild(label);
-                    playlistDiv.appendChild(container);
-                });
-                playlistDiv.style.display = "block";
-            } catch (error) {
-                playlistDiv.innerHTML = `<p style="color: red;">Error: ${error}</p>`;
-                playlistDiv.style.display = "none";
-            }
+        if (currentPlaylistFetchController) {
+            currentPlaylistFetchController.abort();
         }
 
-        handleInput();
-    }, [])
+        currentPlaylistFetchController = new AbortController();
+        const signal = currentPlaylistFetchController.signal;
 
+        if (query.length < 1) {
+            await showPlaylists(playlistResult, id)
+            return;
+        }
+        basicSelected = [];
+        basicUnSelected = [];
+        const params = new URLSearchParams(window.location.search);
+        const soundID = params.get('soundID') ?? id;
+        const playlistDiv = document.getElementById(playlistResult);
+        if (!playlistDiv) return;
+        try {
+            playlistDiv.innerHTML = ``;
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/search_user_playlist?query=${encodeURIComponent(query)}&soundID=${soundID}`,
+                {
+                    signal,
+                    credentials: "include"
+                });
+            if (!response.ok) {
+                playlistDiv.innerHTML = "<p style='color: red;'>Error while searching.</p>";
+                return;
+            }
 
+            const results = await response.json();
+            if (results.length === 0) {
+                playlistDiv.innerHTML = "<p>No results found.</p>";
+                return;
+            }
+
+            results.forEach((item: any) => {
+                const input = document.createElement("input");
+                input.type = "checkbox";
+                input.id = "playlist-checkbox-" + item.playlist.playlistID
+
+                const label = document.createElement("label");
+                label.htmlFor = input.id;
+                label.textContent = item.playlist.name;
+
+                input.checked = item.soundStatus;
+                if (item.soundStatus && !selected.includes(item.playlist.playlistID)) {
+                    basicSelected.push(item.playlist.playlistID)
+                }
+
+                const container = document.createElement("div");
+                container.appendChild(input);
+                container.appendChild(label);
+                playlistDiv.appendChild(container);
+            });
+            playlistDiv.style.display = "block";
+        } catch (error) {
+            playlistDiv.innerHTML = `<p style="color: red;">Error: ${error}</p>`;
+            playlistDiv.style.display = "none";
+        }
+    }
+
+    handleInput();
 }
 
 async function addSound(soundIDs: string[], playlistResult: string, id = "") {
@@ -259,11 +254,13 @@ export function setupPlaylistDiv(
         if (closeBtn && container) {
             closeBtn.onclick = () => {
                 container.style.display = "none";
+                (document.getElementById('mainPlaylistOverlay') as HTMLElement).style.display = 'none'
             };
         }
         window.addEventListener("click", function (e) {
             if (container && container.style.display === "block" && !container.contains(e.target as Node) && e.target !== playlistBtn) {
                 container.style.display = "none";
+                (document.getElementById('mainPlaylistOverlay') as HTMLElement).style.display = 'none'
             }
         });
     }
