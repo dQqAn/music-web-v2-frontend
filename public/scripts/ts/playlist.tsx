@@ -62,10 +62,12 @@ async function showPlaylists(playlistResult: string, id = "") {
                     playlistDiv!.appendChild(container);
                 });
 
-                playlistDiv!.style.display = "block";
-                (document.getElementById('mainPlaylistOverlay') as HTMLElement).style.display = 'block'
+                if (playlistDiv!.innerHTML.trim() !== ``) {
+                    playlistDiv!.style.display = "block";
+                    (document.getElementById('mainPlaylistOverlay') as HTMLElement).style.display = 'block'
 
-                setupCheckboxListener(playlistResult);
+                    setupCheckboxListener(playlistResult);
+                }
             }
         }
 
