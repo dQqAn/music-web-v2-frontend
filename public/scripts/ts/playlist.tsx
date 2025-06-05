@@ -2,12 +2,9 @@ import { activeStatus } from "@/lib/tokenControl";
 
 function togglePlaylist(playlistContainer: string, playlistResult: string, id: string, playlistInput: string) {
     const container = document.getElementById(playlistContainer);
-    console.log("1")
     if (!container) return;
-    console.log("2")
     container.style.display = container.style.display === 'block' ? 'none' : 'block';
     if (container.style.display === 'block') {
-        console.log("3")
         showPlaylists(playlistResult, id)
         setupPlaylistInputListener(id, playlistInput, playlistResult);
     }
@@ -42,10 +39,7 @@ async function showPlaylists(playlistResult: string, id = "") {
 
             if (results.length === 0) {
                 playlistDiv.innerHTML = "<p>No results found.</p>";
-                return;
             }
-
-            console.log("4")
 
             results.forEach((item: any) => {
                 const input = document.createElement("input");
