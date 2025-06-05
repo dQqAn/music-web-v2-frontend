@@ -43,7 +43,7 @@ async function showPlaylists(playlistResult: string, id = "") {
 
             if (results.length !== 0) {
 
-                if (playlistDiv!.innerHTML.trim() !== `` && overlay) {
+                if (playlistDiv!.innerHTML.trim() !== ``) {
                     results.forEach((item: any, index: number) => {
                         const input = document.createElement("input");
                         input.type = "checkbox";
@@ -67,7 +67,7 @@ async function showPlaylists(playlistResult: string, id = "") {
                     });
 
                     playlistDiv!.style.display = "block";
-                    overlay.style.display = 'block'
+                    overlay!.style.display = 'block'
 
                     setupCheckboxListener(playlistResult);
                 }
