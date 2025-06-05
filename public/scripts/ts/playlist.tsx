@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { activeStatus } from "@/lib/tokenControl";
 
 function togglePlaylist(playlistContainer: string, playlistResult: string, id: string, playlistInput: string) {
