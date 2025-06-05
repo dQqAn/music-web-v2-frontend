@@ -23,9 +23,7 @@ async function showPlaylists(playlistResult: string, id = "") {
     const params = new URLSearchParams(window.location.search);
     const soundID = params.get('soundID') ?? id;
     const playlistDiv = document.getElementById(playlistResult);
-
-    let overlayDisplay = (document.getElementById('mainPlaylistOverlay') as HTMLElement).style.display
-    if (!playlistDiv || overlayDisplay === 'none') {
+    if (!playlistDiv) {
         return;
     }
     try {
@@ -41,9 +39,7 @@ async function showPlaylists(playlistResult: string, id = "") {
 
             const results = await response.json();
 
-            if (results.length === 0) {
-                playlistDiv!.innerHTML = "<p>No results found.</p>";
-            } else {
+            if (results.length !== 0) {
                 results.forEach((item: any, index: number) => {
                     const input = document.createElement("input");
                     input.type = "checkbox";
@@ -65,11 +61,12 @@ async function showPlaylists(playlistResult: string, id = "") {
                     container.appendChild(label);
                     playlistDiv!.appendChild(container);
                 });
-            }
-            playlistDiv!.style.display = "block";
-            overlayDisplay = 'block'
 
-            setupCheckboxListener(playlistResult);
+                playlistDiv!.style.display = "block";
+                (document.getElementById('mainPlaylistOverlay') as HTMLElement).style.display = 'block'
+
+                setupCheckboxListener(playlistResult);
+            }
         }
 
         handleShowPlaylists();
