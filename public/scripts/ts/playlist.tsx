@@ -2,11 +2,13 @@ import { activeStatus } from "@/lib/tokenControl";
 
 function togglePlaylist(playlistContainer: string, playlistResult: string, id: string, playlistInput: string) {
     const container = document.getElementById(playlistContainer);
+    console.log("1")
     if (!container) return;
+    console.log("2")
     container.style.display = container.style.display === 'block' ? 'none' : 'block';
     if (container.style.display === 'block') {
-        showPlaylists(playlistResult, id).then(r => {
-        });
+        console.log("3")
+        showPlaylists(playlistResult, id)
         setupPlaylistInputListener(id, playlistInput, playlistResult);
     }
 }
@@ -42,6 +44,8 @@ async function showPlaylists(playlistResult: string, id = "") {
                 playlistDiv.innerHTML = "<p>No results found.</p>";
                 return;
             }
+
+            console.log("4")
 
             results.forEach((item: any) => {
                 const input = document.createElement("input");
@@ -85,8 +89,7 @@ function setupPlaylistInputListener(id: string, playlistInput: string, playlistR
             clearTimeout(playlistSearchTimeout);
         }
         playlistSearchTimeout = window.setTimeout(() => {
-            handlePlaylistInput(event, id, playlistResult).then(r => {
-            });
+            handlePlaylistInput(event, id, playlistResult)
         }, 300);
     });
 }
@@ -263,6 +266,6 @@ export function setupPlaylistDiv(
             }
         });
     } else {
-        console.warn("You are not login. Active status: ", activeStatus)
+        console.log("You are not login. Active status: ", activeStatus)
     }
 }
