@@ -23,7 +23,9 @@ async function showPlaylists(playlistResult: string, id = "") {
     const params = new URLSearchParams(window.location.search);
     const soundID = params.get('soundID') ?? id;
     const playlistDiv = document.getElementById(playlistResult);
-    if (!playlistDiv) {
+
+    let overlayDisplay = (document.getElementById('mainPlaylistOverlay') as HTMLElement).style.display
+    if (!playlistDiv || overlayDisplay === 'none') {
         return;
     }
     try {
@@ -65,7 +67,7 @@ async function showPlaylists(playlistResult: string, id = "") {
                 });
             }
             playlistDiv!.style.display = "block";
-            (document.getElementById('mainPlaylistOverlay') as HTMLElement).style.display = 'block'
+            overlayDisplay = 'block'
 
             setupCheckboxListener(playlistResult);
         }
