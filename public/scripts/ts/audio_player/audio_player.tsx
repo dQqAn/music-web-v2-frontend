@@ -517,28 +517,32 @@ export function audioPlayer() {
         //endregion
 
         //region Playlist Box
-        const playlistOverlayContent = document.getElementById('playlistOverlayContent') as HTMLElement;
-        const playlistOverlay = document.getElementById('playlistOverlay') as HTMLElement;
-        const openPlaylist = document.getElementById('openPlaylistButton') as HTMLElement;
-        const closePlaylist = document.getElementById('closePlaylistOverlay') as HTMLElement;
+        const playlistOverlayContent = document.getElementById('playlistOverlayContent');
+        const playlistOverlay = document.getElementById('playlistOverlay');
+        const openPlaylist = document.getElementById('openPlaylistButton');
+        const closePlaylist = document.getElementById('closePlaylistOverlay');
+        const mainQueueOverlay = document.getElementById('mainQueueOverlay');
 
         if (playlistOverlay) {
             playlistOverlay.addEventListener("click", (e) => {
                 if (e.target === playlistOverlay) {
-                    playlistOverlayContent.innerHTML = ``;
+                    playlistOverlayContent!.innerHTML = ``;
                     playlistOverlay.style.display = 'none';
+                    mainQueueOverlay!.style.display = 'none';
                 }
             });
             if (openPlaylist) {
                 openPlaylist.addEventListener("click", (e) => {
                     playlistOverlay.style.display = 'block';
-                    createPlaylistContent(playlistOverlayContent, getStoredSoundIDs())
+                    mainQueueOverlay!.style.display = 'block';
+                    createPlaylistContent(playlistOverlayContent!, getStoredSoundIDs())
                 });
             }
             if (closePlaylist) {
                 closePlaylist.addEventListener("click", (e) => {
-                    playlistOverlayContent.innerHTML = ``;
+                    playlistOverlayContent!.innerHTML = ``;
                     playlistOverlay.style.display = 'none';
+                    mainQueueOverlay!.style.display = 'none';
                 });
             }
         }
@@ -551,8 +555,14 @@ async function createPlaylistContent(playlistOverlayContent: HTMLElement, soundI
 
     for (const [index, soundID] of soundIDs.entries()) {
         const listItem = document.createElement('div');
+        listItem.style.width = '100%';
+        listItem.style.display = 'flex';
+        listItem.style.flexDirection = 'column';
+        listItem.style.marginBottom = '10px';
 
         const soundInfos = document.createElement('div');
+        soundInfos.style.display = 'flex';
+        soundInfos.style.justifyContent = 'space-between';
 
         const imageContainer = document.createElement('div');
 
@@ -696,7 +706,7 @@ export function fetchAndCreateRegions(soundID: string, regionCount: number, regi
         })
         .then(data => {
             let regions = data.regions;
- 
+
             if (typeof regions === 'string') {
                 try {
                     regions = JSON.parse(regions);

@@ -67,7 +67,51 @@ export default function Footer() {
           <div id="soundOptionsToUser" style={{ display: 'flex', gap: 16 }}>
             <button id="mainDownloadButton">D</button>
 
-            <button id="openPlaylistButton">Queue</button>
+            <div>
+              <button id="openPlaylistButton">Queue</button>
+
+              <div id='mainQueueOverlay' style={{
+                display: 'none',
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                backdropFilter: 'blur(4px)',
+                zIndex: 999,
+              }}>
+
+                <div id="playlistOverlay" style={{ position: 'fixed', inset: 0, display: 'none', zIndex: 60 }}>
+                  <div style={{
+                    position: 'fixed',
+                    top: '50%',
+                    left: '50%',
+                    width: '24rem',
+                    transform: 'translate(-50%, -50%)',
+                    borderRadius: '1rem',
+                    padding: '1.5rem',
+                    zIndex: 60,
+                    backgroundColor: '#f5d0fe',
+                    color: '#0a0a0a',
+                  }}>
+                    <button id="closePlaylistOverlay" style={{
+                      position: 'absolute',
+                      top: '0.75rem',
+                      right: '0.75rem',
+                      zIndex: 60,
+                      background: 'transparent',
+                      border: 'none',
+                      cursor: 'pointer',
+                    }}>
+                      ✕
+                    </button>
+
+                    <div id="playlistOverlayContent" style={{ zIndex: 60, width: '100%' }}></div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <div id="mainFavDiv"></div>
 
