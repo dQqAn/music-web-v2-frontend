@@ -144,7 +144,6 @@ export default function Footer() {
                     zIndex: 1000,
                     maxWidth: '90%',
                     maxHeight: '80%',
-                    overflowY: 'auto',
                     padding: '10px',
                     backgroundColor: 'white',
                     color: 'black'
@@ -161,7 +160,7 @@ export default function Footer() {
                     </div>
                   </div>
 
-                  <div id="mainPlaylistResult" style={{ height: '60px' }}></div>
+                  <div id="mainPlaylistResult" style={{ maxHeight: '100px', overflowY: 'auto' }}></div>
                   <button id="mainAddToPlaylistBtn" style={{ width: '100%' }}>Submit</button>
                 </div>
 

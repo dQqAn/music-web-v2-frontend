@@ -149,9 +149,11 @@ async function handlePlaylistInput(event: Event, id = "", playlistResult: string
                 playlistDiv.appendChild(container);
             });
             playlistDiv.style.display = "block";
+            (document.getElementById('mainPlaylistOverlay') as HTMLElement).style.display = 'block'
         } catch (error) {
             playlistDiv.innerHTML = `<p style="color: red;">Error: ${error}</p>`;
             playlistDiv.style.display = "none";
+            (document.getElementById('mainPlaylistOverlay') as HTMLElement).style.display = 'none'
         }
     }
 
