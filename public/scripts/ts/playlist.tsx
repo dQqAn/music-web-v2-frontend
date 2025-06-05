@@ -23,9 +23,11 @@ async function showPlaylists(playlistResult: string, id = "") {
     const params = new URLSearchParams(window.location.search);
     const soundID = params.get('soundID') ?? id;
     const playlistDiv = document.getElementById(playlistResult);
-    if (!playlistDiv) return;
+    if (!playlistDiv) {
+        return;
+    }
     try {
-        playlistDiv.innerHTML = ``;
+        playlistDiv!.innerHTML = ``;
 
         const handleShowPlaylists = async () => {
             const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/user_playlist?soundID=${soundID}`, {
@@ -38,32 +40,33 @@ async function showPlaylists(playlistResult: string, id = "") {
             const results = await response.json();
 
             if (results.length === 0) {
-                playlistDiv.innerHTML = "<p>No results found.</p>";
-            }
+                playlistDiv!.innerHTML = "<p>No results found.</p>";
+            } else {
+                results.forEach((item: any, index: number) => {
+                    const input = document.createElement("input");
+                    input.type = "checkbox";
+                    input.id = "playlist-checkbox-" + item.playlist.playlistID
 
-            results.forEach((item: any) => {
-                const input = document.createElement("input");
-                input.type = "checkbox";
-                input.id = "playlist-checkbox-" + item.playlist.playlistID
+                    const label = document.createElement("label");
+                    label.htmlFor = input.id;
+                    label.textContent = (index + 1) + ': ' + item.playlist.name;
 
-                const label = document.createElement("label");
-                label.htmlFor = input.id;
-                label.textContent = item.playlist.name;
-
-                if (item.soundStatus) {
-                    input.checked = item.soundStatus;
-                    if (item.soundStatus && !selected.includes(item.playlist.playlistID)) {
-                        basicSelected.push(item.playlist.playlistID)
+                    if (item.soundStatus) {
+                        input.checked = item.soundStatus;
+                        if (item.soundStatus && !selected.includes(item.playlist.playlistID)) {
+                            basicSelected.push(item.playlist.playlistID)
+                        }
                     }
-                }
 
-                const container = document.createElement("div");
-                container.appendChild(input);
-                container.appendChild(label);
-                playlistDiv.appendChild(container);
-            });
-            playlistDiv.style.display = "block";
+                    const container = document.createElement("div");
+                    container.appendChild(input);
+                    container.appendChild(label);
+                    playlistDiv!.appendChild(container);
+                });
+            }
+            playlistDiv!.style.display = "block";
             (document.getElementById('mainPlaylistOverlay') as HTMLElement).style.display = 'block'
+
             setupCheckboxListener(playlistResult);
         }
 
@@ -129,14 +132,14 @@ async function handlePlaylistInput(event: Event, id = "", playlistResult: string
                 return;
             }
 
-            results.forEach((item: any) => {
+            results.forEach((item: any, index: number) => {
                 const input = document.createElement("input");
                 input.type = "checkbox";
                 input.id = "playlist-checkbox-" + item.playlist.playlistID
 
                 const label = document.createElement("label");
                 label.htmlFor = input.id;
-                label.textContent = item.playlist.name;
+                label.textContent = (index + 1) + ': ' + item.playlist.name;
 
                 input.checked = item.soundStatus;
                 if (item.soundStatus && !selected.includes(item.playlist.playlistID)) {
@@ -148,8 +151,6 @@ async function handlePlaylistInput(event: Event, id = "", playlistResult: string
                 container.appendChild(label);
                 playlistDiv.appendChild(container);
             });
-            playlistDiv.style.display = "block";
-            (document.getElementById('mainPlaylistOverlay') as HTMLElement).style.display = 'block'
         } catch (error) {
             playlistDiv.innerHTML = `<p style="color: red;">Error: ${error}</p>`;
             playlistDiv.style.display = "none";
@@ -242,12 +243,10 @@ export function setupPlaylistDiv(
             togglePlaylist(playlistContainerID, playlistResultID, sound.soundID, playlistInputID)
         }
         if (createPlaylistBtn) createPlaylistBtn.onclick = () => {
-            createPlaylist(playlistInputID, playlistResultID, sound.soundID).then(r => {
-            })
+            createPlaylist(playlistInputID, playlistResultID, sound.soundID)
         }
         if (addToPlaylist) addToPlaylist.onclick = () => {
-            addSound([sound.soundID], playlistResultID, sound.soundID).then(r => {
-            })
+            addSound([sound.soundID], playlistResultID, sound.soundID)
         }
         if (closeBtn && container) {
             closeBtn.onclick = () => {
