@@ -153,7 +153,7 @@ async function handlePlaylistInput(event: Event, id = "", playlistResult: string
                 playlistDiv.appendChild(container);
             });
         } catch (error) {
-            playlistDiv.innerHTML = `<p style="color: red;">Error: ${error}</p>`;
+            playlistDiv.innerHTML = ``;
             playlistDiv.style.display = "none";
             (document.getElementById('mainPlaylistOverlay') as HTMLElement).style.display = 'none'
         }
@@ -251,12 +251,14 @@ export function setupPlaylistDiv(
         }
         if (closeBtn && container) {
             closeBtn.onclick = () => {
+                playlistDiv.innerHTML = ``;
                 container.style.display = "none";
                 (document.getElementById('mainPlaylistOverlay') as HTMLElement).style.display = 'none'
             };
         }
         window.addEventListener("click", function (e) {
             if (container && container.style.display === "block" && !container.contains(e.target as Node) && e.target !== playlistBtn) {
+                playlistDiv.innerHTML = ``;
                 container.style.display = "none";
                 (document.getElementById('mainPlaylistOverlay') as HTMLElement).style.display = 'none'
             }
