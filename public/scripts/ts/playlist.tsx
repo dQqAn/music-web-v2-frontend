@@ -67,6 +67,11 @@ async function showPlaylists(playlistResult: string, id = "") {
                 playlistDiv!.style.display = "block";
                 overlay!.style.display = 'block'
 
+                const container = document.getElementById('mainPlaylistContainer');
+                if (container) {
+                    container.style.display = 'block';
+                }
+
                 setupCheckboxListener(playlistResult);
             }
         }
