@@ -1,13 +1,5 @@
 import WaveSurfer from 'wavesurfer.js'
-import HoverPlugin from 'wavesurfer.js/dist/plugins/hover'
-import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions'
-import { formatTime, mainWaveSurfer } from './audio_player/audio_player'
-import { toSlug } from './header'
-import { createFavDiv } from './favourite'
-import { createStemsContent } from './stems'
-import { activeStatus } from "@/lib/tokenControl";
-import { useEffect } from 'react'
-import { DynamicIcon } from 'lucide-react/dynamic';
+import { stretchAudio } from '@/lib/stretchAudio'
 
 export const soundListWaveSurfers: { [key: string]: WaveSurfer } = {};
 
@@ -149,6 +141,38 @@ export async function downloadSound(soundID: string, stems = false, stemPath = "
     URL.revokeObjectURL(blobUrl);
 }
 
+export async function downloadStretchedSound(soundID: string, stems = false, stemPath = "", stretchedSound = false, duration = 0) {
+    const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/download/sound/${encodeURIComponent(soundID)}?stems=${stems}&stemPath=${stemPath}&stretchedSound=${stretchedSound}&duration=${duration}`;
+
+    const response = await fetch(url);
+    if (!response.ok) {
+        console.error("Download failed");
+        return;
+    }
+
+    let filename = `${soundID}.wav`;
+    const disposition = response.headers.get("Content-Disposition");
+    if (disposition && disposition.includes("filename=")) {
+        const match = disposition.match(/filename="?([^"]+)"?/);
+        if (match?.[1]) {
+            filename = match[1];
+        }
+    }
+
+    const blob = await response.blob();
+    const file = new File([blob], filename, { type: blob.type });
+    const stretchedFile = await stretchAudio(file, duration)
+    const blobUrl = URL.createObjectURL(stretchedFile);
+
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(blobUrl);
+}
+
 export async function getSound(soundID: string) {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/sound/${soundID}`, {
         headers: {
@@ -278,7 +302,7 @@ export function createListMenu(sound: any) {
 
         const duration = parseInt(input.value, 10)
         if (isNaN(duration)) return;
-        await downloadSound(sound.soundID, false, "", true, duration)
+        await downloadStretchedSound(sound.soundID, false, "", true, duration)
     })
 
     popup.addEventListener("click", (e) => e.stopPropagation());
