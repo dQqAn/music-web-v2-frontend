@@ -219,7 +219,8 @@ function createCategoryElement(item: any) {
 
 export function createListMenu(sound: any) {
     const wrapper = document.createElement("div");
-    // wrapper.style.display = 'none';
+    wrapper.style.position = 'relative';
+
     const button = document.createElement("button");
 
     const menuIcon = document.createElement('i');
@@ -232,6 +233,14 @@ export function createListMenu(sound: any) {
     const popup = document.createElement("div");
     popup.id = `popup_${sound.soundID}`;
     popup.style.display = 'none';
+    popup.style.zIndex = '50';
+    popup.style.position = 'fixed';
+    popup.style.top = '50%';
+    popup.style.left = '50%';
+    popup.style.transform = 'translate(-50%, -50%)';
+    popup.style.backgroundColor = 'gray';
+    popup.style.padding = '20px';
+
     const input = document.createElement("input");
     input.type = "number";
     input.placeholder = "(max: 600, min: 10)";
