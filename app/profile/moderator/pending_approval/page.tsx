@@ -5,7 +5,7 @@ import { audioPlayer } from "@/public/scripts/ts/audio_player/audio_player"
 import "@/public/styles/moderator_pending_approval.css"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { moderatorPendingApprovalContent } from "@/public/scripts/ts/moderator_pending_approval/moderator_pending_approval"
+import { getSounds, submitButton } from "@/public/scripts/ts/moderator_pending_approval/moderator_pending_approval"
 
 export default function ModeratorPendingApproval() {
     const [isLoading, setIsLoading] = useState(true)
@@ -33,16 +33,20 @@ export default function ModeratorPendingApproval() {
         checkModerator()
     }, [router])
 
-    moderatorPendingApprovalContent()
-
     waveformPlayer()
     audioPlayer()
+
+    useEffect(() => {
+        if (!isLoading) {
+            getSounds(1)
+        }
+    }, [isLoading])
 
     if (isLoading) return null
 
     return (
         <div className="page">
-            <div id="tableOptions">
+            <div style={{ color: 'black' }} id="tableOptions">
                 <table >
                     <thead>
                         <tr>
@@ -60,7 +64,7 @@ export default function ModeratorPendingApproval() {
             </div>
 
             <div>
-                <button id="submitButton">Submit</button>
+                <button id="submitButton" onClick={submitButton}>Submit</button>
                 <div id="pagination" ></div>
             </div>
         </div>
