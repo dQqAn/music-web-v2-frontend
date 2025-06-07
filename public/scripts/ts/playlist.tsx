@@ -41,7 +41,7 @@ async function showPlaylists(playlistResult: string, id = "") {
 
             const overlay = document.getElementById('mainPlaylistOverlay')
 
-            if (results.length !== 0) {
+            if (results.length > -1) {
                 results.forEach((item: any, index: number) => {
                     const input = document.createElement("input");
                     input.type = "checkbox";
