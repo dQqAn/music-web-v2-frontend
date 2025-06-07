@@ -9,8 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.50.0",
     "@types/audiobuffer-to-wav": "^1.0.4",
     "audiobuffer-to-wav": "^1.0.0",
+    "fs": "^0.0.1-security",
     "lucide": "^0.511.0",
     "lucide-react": "^0.511.0",
     "music-metadata": "^11.2.3",
@@ -20,7 +22,9 @@
     "realtime-bpm-analyzer": "^4.0.2",
     "soundtouch-ts": "^1.1.1",
     "soundtouchjs": "^0.2.1",
-    "wavesurfer.js": "^7.9.5"
+    "uuid": "^11.1.0",
+    "wavesurfer.js": "^7.9.5",
+    "webpack": "^5.99.9"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

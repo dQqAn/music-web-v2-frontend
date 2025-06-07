@@ -4,6 +4,11 @@ import { useEffect } from 'react';
 import { analyzeBPMFromFile } from '@/lib/sound/analyzeBPMFromFile';
 import { stretchAudio } from '@/lib/stretchAudio'
 import { getAudioDurationInSeconds } from '@/lib/audioUtils'
+import { sendRemoteFileRaw, sendLocalFileRaw } from '@/lib/fileUtils'
+import { generateUniqueId } from '@/lib/generateUniqueId'
+import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
+import { fileTypeFromBuffer } from 'file-type';
 
 function formSubmit() {
     document.getElementById("uploadForm")?.addEventListener("submit", async (event) => {
@@ -18,16 +23,17 @@ function formSubmit() {
         const errorInfo = document.getElementById("errorInfo") as HTMLElement;
 
         if (!(imageInput instanceof HTMLInputElement) || !(soundInput instanceof HTMLInputElement)
-             || !imageInput.files?.length || !soundInput.files?.length) {
+            || !imageInput.files?.length || !soundInput.files?.length) {
             if (errorMessage) errorMessage.textContent = "Wrong files";
             if (errorInfo) errorInfo.style.display = "block";
             return;
         }
 
-        const soundFile = soundInput.files[0]
+        const soundFile = soundInput.files[0];
+        const imageFile = imageInput.files[0];
         const formData = new FormData();
-        formData.append("image", imageInput.files[0]);
-        formData.append("sound", soundFile);
+        //formData.append("image", imageInput.files[0]);
+        //formData.append("sound", soundFile);
         formData.append("name", soundName.value);
         formData.append("bpm", bpm.toString());
 
@@ -49,24 +55,143 @@ function formSubmit() {
         formData.append("loops", JSON.stringify(loops));
         formData.append("selectedArtists", JSON.stringify(selectedArtists));
 
+        let duration = await getAudioDurationInSeconds(soundFile);
+        duration = duration === -1 ? 0 : duration;
+        formData.append("duration", duration.toString());
+
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/userID`, {
+            credentials: 'include'
+        })
+        const data = await res.json()
+        const userID: string = data.userID ? data.userID : `temp`
+
+        const baseUploadDir = path.resolve('public/uploads');
+        const imageDir = path.join(baseUploadDir, 'image', userID);
+        const soundDir = path.join(baseUploadDir, 'sound', userID);
+        const soundID = generateUniqueId();
+        formData.append("soundID", soundID);
+        const stemDir = path.join(baseUploadDir, 'stem', soundID);
+        /*if (process.env.NODE_ENV === 'development') {
+            ensureDir(imageDir);
+            ensureDir(soundDir);
+            ensureDir(stemDir);
+        }*/
+
+        const soundFileBuffer = Buffer.from(await soundFile.arrayBuffer());
+        const soundUuid = uuidv4();
+        const soundFT = await fileTypeFromBuffer(soundFileBuffer);
+        const soundExt = soundFT?.ext || path.extname(soundFile.name).slice(1).toLowerCase();
+
+        const imageFileBuffer = Buffer.from(await imageFile.arrayBuffer());
+        const imageUuid = uuidv4();
+        const imageFT = await fileTypeFromBuffer(imageFileBuffer);
+
+        if (process.env.NODE_ENV === 'development') {
+            if (imageFT?.mime.startsWith('image/')) {
+                const imageTarget = path.join(imageDir, `${imageUuid}_${imageFile.name}`);
+                formData.append("imagePath", imageTarget);
+                await sendLocalFileRaw(imageFile, imageTarget);
+            }
+
+            if (soundFT?.mime.startsWith('audio/')) {
+                if (['wav', 'mp3'].includes(soundExt)) {
+                    const soundTarget = path.join(soundDir, `${soundUuid}_${soundFile.name}`);
+                    formData.append("soundPath", soundTarget);
+                    await sendLocalFileRaw(soundFile, soundTarget);
+                }
+            }
+        } else {
+            if (imageFT?.mime.startsWith('image/')) {
+                const supabasePath = `image/${userID}/${imageUuid}_${imageFile.name}`;
+                await sendRemoteFileRaw(imageFile, supabasePath)
+                formData.append("imagePath", supabasePath);
+                /*const result = await saveFileToSupabase(
+                    'uploads',
+                    supabasePath,
+                    imageFileBuffer
+                );
+                if (result.error) {
+                    console.error("Upload failed:", result.error)
+                } else {
+                    console.log("File uploaded:", result.publicUrl)
+                    formData.append("imagePath", supabasePath);
+                }*/
+            }
+
+            if (soundFT?.mime.startsWith('audio/')) {
+                if (['wav', 'mp3'].includes(soundExt)) {
+                    const soundBaseName = path.parse(soundFile.name).name;
+                    const supabasePath = `sound/${userID}/${soundUuid}_${soundBaseName}.${soundExt}`;
+                    await sendRemoteFileRaw(soundFile, supabasePath)
+                    formData.append("soundPath", supabasePath);
+                    /*const result = await saveFileToSupabase(
+                        'uploads',
+                        supabasePath,
+                        soundFileBuffer
+                    );
+                    if (result.error) {
+                        console.error("Upload failed:", result.error)
+                    } else {
+                        console.log("File uploaded:", result.publicUrl)
+                        formData.append("soundPath", supabasePath);
+                    }*/
+                }
+            }
+        }
+
+        //todo image and sound input
         for (const entry of stemEntries) {
             const file = entry.files[0];
             const buffer = await file.arrayBuffer();
             const newFile = new File([buffer], "audio.wav", { type: file.type });
 
-            let duration = await getAudioDurationInSeconds(soundFile);
-            duration = duration === -1 ? 0 : duration;
+            let newDuration = await getAudioDurationInSeconds(newFile);
+            newDuration = newDuration === -1 ? 0 : newDuration;
 
-            const soundFilePath = URL.createObjectURL(newFile);
-            const stretched = await stretchAudio(newFile, duration);
+            let newBuffer: Buffer<ArrayBuffer> | null
 
-            if (duration === -1) {
-                formData.append("stemFiles[]", entry.files[0]);
+            if (duration !== 0 && duration === newDuration) {
+                newBuffer = buffer
             } else {
-                formData.append("stemFiles[]", stretched);
+                try {
+                    const stretched = await stretchAudio(newFile, duration);
+                    newBuffer = Buffer.from(await stretched.arrayBuffer());
+                } catch (err) {
+                    console.error("Stretch failed, using original buffer:", err);
+                    newBuffer = buffer;
+                }
             }
-            formData.append("stemNames[]", entry.name);
-            URL.revokeObjectURL(soundFilePath);
+
+            const ft = await fileTypeFromBuffer(buffer);
+            const ext = ft?.ext || path.extname(newFile.name).slice(1).toLowerCase();
+            const baseName = path.parse(newFile.name).name;
+            const uuid = uuidv4();
+
+            if (['wav', 'mp3'].includes(ext)) {
+                if (process.env.NODE_ENV === 'development') {
+                    const target = path.join(stemDir, `${uuid}_${baseName}.${ext}`);
+                    await sendLocalFileRaw(file, target);
+                    formData.append("stemNames[]", entry.name);
+                    formData.append("stemPaths[]", target);
+                } else {
+                    const supabasePath = `stem/${soundID}/${uuid}_${baseName}.${ext}`;
+                    await sendRemoteFileRaw(newFile, supabasePath)
+                    formData.append("stemNames[]", entry.name);
+                    formData.append("stemPaths[]", supabasePath);
+                    /*const result = await saveFileToSupabase(
+                        'uploads',
+                        supabasePath,
+                        newBuffer ?? buffer
+                    );
+                    if (result.error) {
+                        console.error("Upload failed:", result.error)
+                    } else {
+                        console.log("File uploaded:", result.publicUrl)
+                        formData.append("stemNames[]", entry.name);
+                        formData.append("stemPaths[]", supabasePath);
+                    }*/
+                }
+            }
         }
 
         fileInfo.style.display = "none";
