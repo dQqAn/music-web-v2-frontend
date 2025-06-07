@@ -62,7 +62,7 @@ function getSounds(page: number) {
                 tbody.appendChild(row);
             });
 
-            //window.history.pushState({ page: tempPage }, `Page ${tempPage}`, `${process.env.NEXT_PUBLIC_BACKEND_URL}/profile/moderator/pending_approval?page=${tempPage}`);
+            window.history.pushState({ page: tempPage }, `Page ${tempPage}`, `/profile/moderator/pending_approval?page=${tempPage}`);
 
             const totalPages = Math.floor((length + 10 - 1) / 10);
             updatePagination('pagination', tempPage, totalPages, (p: number) => {
