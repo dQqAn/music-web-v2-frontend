@@ -24,6 +24,7 @@ export default function ModeratorPendingApproval() {
                     setIsLoading(false)
                 }
             } catch (err) {
+                setIsLoading(false)
                 console.log(err)
                 router.push('/')
             }

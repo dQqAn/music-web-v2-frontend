@@ -17,7 +17,8 @@ function formSubmit() {
         const errorMessage = document.getElementById("errorMessage") as HTMLElement;
         const errorInfo = document.getElementById("errorInfo") as HTMLElement;
 
-        if (!(imageInput instanceof HTMLInputElement) || !(soundInput instanceof HTMLInputElement) || !imageInput.files?.length || !soundInput.files?.length) {
+        if (!(imageInput instanceof HTMLInputElement) || !(soundInput instanceof HTMLInputElement)
+             || !imageInput.files?.length || !soundInput.files?.length) {
             if (errorMessage) errorMessage.textContent = "Wrong files";
             if (errorInfo) errorInfo.style.display = "block";
             return;
