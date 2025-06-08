@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { analyzeBPMFromFile } from '@/lib/sound/analyzeBPMFromFile';
 import { stretchAudio } from '@/lib/stretchAudio'
 import { getAudioDurationInSeconds } from '@/lib/audioUtils'
-import { sendRemoteFileRaw, sendLocalFileRaw } from '@/lib/fileUtils'
+import { sendLocalFileRaw, getContentType } from '@/lib/fileUtils'
 import { generateUniqueId } from '@/lib/generateUniqueId'
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
@@ -103,38 +103,36 @@ function formSubmit() {
         } else {
             if (imageFT?.mime.startsWith('image/')) {
                 const supabasePath = `image/${userID}/${imageUuid}_${imageFile.name}`;
-                await sendRemoteFileRaw(imageFile, supabasePath)
+
+                const contentType = getContentType(imageFile)
+                await fetch(`${process.env.SUPABASE_URL}/storage/v1/object/uploads/${supabasePath}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+                        'Content-Type': contentType,
+                    },
+                    body: imageFile,
+                });
+
                 formData.append("imagePath", supabasePath);
-                /*const result = await saveFileToSupabase(
-                    'uploads',
-                    supabasePath,
-                    imageFileBuffer
-                );
-                if (result.error) {
-                    console.error("Upload failed:", result.error)
-                } else {
-                    console.log("File uploaded:", result.publicUrl)
-                    formData.append("imagePath", supabasePath);
-                }*/
             }
 
             if (soundFT?.mime.startsWith('audio/')) {
                 if (['wav', 'mp3'].includes(soundExt)) {
                     const soundBaseName = path.parse(soundFile.name).name;
                     const supabasePath = `sound/${userID}/${soundUuid}_${soundBaseName}.${soundExt}`;
-                    await sendRemoteFileRaw(soundFile, supabasePath)
+ 
+                    const contentType = getContentType(soundFile)
+                    await fetch(`${process.env.SUPABASE_URL}/storage/v1/object/uploads/${supabasePath}`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+                            'Content-Type': contentType,
+                        },
+                        body: soundFile,
+                    });
+
                     formData.append("soundPath", supabasePath);
-                    /*const result = await saveFileToSupabase(
-                        'uploads',
-                        supabasePath,
-                        soundFileBuffer
-                    );
-                    if (result.error) {
-                        console.error("Upload failed:", result.error)
-                    } else {
-                        console.log("File uploaded:", result.publicUrl)
-                        formData.append("soundPath", supabasePath);
-                    }*/
                 }
             }
         }
@@ -142,7 +140,7 @@ function formSubmit() {
         //todo image and sound input
         for (const entry of stemEntries) {
             const file = entry.files[0];
-            const buffer = await file.arrayBuffer();
+            const buffer = Buffer.from(await file.arrayBuffer());
             const newFile = new File([buffer], "audio.wav", { type: file.type });
 
             let newDuration = await getAudioDurationInSeconds(newFile);
@@ -175,21 +173,19 @@ function formSubmit() {
                     formData.append("stemPaths[]", target);
                 } else {
                     const supabasePath = `stem/${soundID}/${uuid}_${baseName}.${ext}`;
-                    await sendRemoteFileRaw(newFile, supabasePath)
+
+                    const contentType = getContentType(newFile)
+                    await fetch(`${process.env.SUPABASE_URL}/storage/v1/object/uploads/${supabasePath}`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+                            'Content-Type': contentType,
+                        },
+                        body: newFile,
+                    });
+
                     formData.append("stemNames[]", entry.name);
                     formData.append("stemPaths[]", supabasePath);
-                    /*const result = await saveFileToSupabase(
-                        'uploads',
-                        supabasePath,
-                        newBuffer ?? buffer
-                    );
-                    if (result.error) {
-                        console.error("Upload failed:", result.error)
-                    } else {
-                        console.log("File uploaded:", result.publicUrl)
-                        formData.append("stemNames[]", entry.name);
-                        formData.append("stemPaths[]", supabasePath);
-                    }*/
                 }
             }
         }

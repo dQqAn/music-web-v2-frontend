@@ -50,3 +50,12 @@ export async function sendLocalFileRaw(file: File, savePath: string): Promise<bo
   }
 }
 
+export function getContentType(file: File): string {
+  if (file.type) return file.type;
+
+  const ext = file.name.split('.').pop()?.toLowerCase();
+  if (ext === 'mp3') return 'audio/mpeg';
+  if (ext === 'wav') return 'audio/wav';
+
+  return 'application/octet-stream';
+}
