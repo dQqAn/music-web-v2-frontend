@@ -105,7 +105,7 @@ function formSubmit() {
                 const supabasePath = `image/${userID}/${imageUuid}_${imageFile.name}`;
 
                 const contentType = getContentType(imageFile)
-                await fetch(`${process.env.SUPABASE_URL}/storage/v1/object/uploads/${supabasePath}`, {
+                await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/uploads/${supabasePath}`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
@@ -123,7 +123,7 @@ function formSubmit() {
                     const supabasePath = `sound/${userID}/${soundUuid}_${soundBaseName}.${soundExt}`;
  
                     const contentType = getContentType(soundFile)
-                    await fetch(`${process.env.SUPABASE_URL}/storage/v1/object/uploads/${supabasePath}`, {
+                    await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/uploads/${supabasePath}`, {
                         method: 'POST',
                         headers: {
                             'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
@@ -175,7 +175,7 @@ function formSubmit() {
                     const supabasePath = `stem/${soundID}/${uuid}_${baseName}.${ext}`;
 
                     const contentType = getContentType(newFile)
-                    await fetch(`${process.env.SUPABASE_URL}/storage/v1/object/uploads/${supabasePath}`, {
+                    await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/uploads/${supabasePath}`, {
                         method: 'POST',
                         headers: {
                             'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
