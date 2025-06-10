@@ -1,5 +1,6 @@
 import WaveSurfer from 'wavesurfer.js'
 import { stretchAudio } from '@/lib/stretchAudio'
+import { Sound } from '@/public/types/sound';
 
 export const soundListWaveSurfers: { [key: string]: WaveSurfer } = {};
 
@@ -173,7 +174,7 @@ export async function downloadStretchedSound(soundID: string, stems = false, ste
     URL.revokeObjectURL(blobUrl);
 }
 
-export async function getSound(soundID: string) {
+export async function getSound(soundID: string): Promise<Sound> {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/sound/${soundID}`, {
         headers: {
             'Accept': 'application/json'
