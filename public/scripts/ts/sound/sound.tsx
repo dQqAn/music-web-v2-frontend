@@ -81,7 +81,7 @@ export function setSoundInfos(sound: any, soundImageDivID: string, soundNameDivI
 
     if (name) {
         name.innerHTML = `
-        <a href="${process.env.NEXT_PUBLIC_BACKEND_URL}/sound/?${toSlug(sound.name)}&soundID=${sound.soundID}">
+        <a href="/sound/?${toSlug(sound.name)}&soundID=${sound.soundID}">
                     <h5>${sound.name}</h5>      
                 </a>
          `;
@@ -94,7 +94,7 @@ export function setSoundInfos(sound: any, soundImageDivID: string, soundNameDivI
             artists.innerHTML = artistArray
                 .map((artist: { id: string; name: string }) => `
                     <p>
-                        <a href="${process.env.NEXT_PUBLIC_BACKEND_URL}/artist_profile/${artist.id}">
+                        <a href="/artist_profile/${artist.id}">
                             ${artist.name}
                         </a>
                     </p>
