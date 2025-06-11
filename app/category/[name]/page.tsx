@@ -3,7 +3,7 @@
 import { audioPlayer } from "@/public/scripts/ts/audio_player/audio_player"
 import { waveformPlayer } from "@/public/scripts/ts/audio_player/audio_player"
 import "@/public/styles/category.css"
-import styles from "../../page.module.css"
+import styles from "../page.module.css"
 import { SoundList } from "@/public/scripts/newSoundList"
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
