@@ -1,7 +1,6 @@
 import WaveSurfer from 'wavesurfer.js'
 import { setSoundInfos } from './sound/sound'
 import { downloadSound, getSound } from './soundList'
-import { useEffect } from 'react'
 
 export function createStemsContent(soundID: string) {
     const stemsListWaveSurfers: any = {}

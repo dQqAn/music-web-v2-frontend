@@ -18,7 +18,7 @@ import { setupPlaylistDiv } from '../playlist'
 import { createFavDiv } from '../favourite'
 import { setSoundInfos } from '../sound/sound'
 import { createStemsContent } from '../stems'
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { fetchAudio } from '../../newSoundList'
 
 export let mainWaveSurfer: WaveSurfer | null = null;

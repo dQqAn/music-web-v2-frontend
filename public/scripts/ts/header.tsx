@@ -42,7 +42,7 @@ export function headerContent() {
                     ).join(", ");
 
                     div.onclick = () => {
-                        window.location.href = `/sound/?${toSlug(item.name)}&soundID=${item.soundID}`;
+                        window.location.href = `/sound/${item.soundID}`;
                     };
                     resultsDiv.appendChild(div);
                 });

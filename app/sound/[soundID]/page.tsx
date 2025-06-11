@@ -4,7 +4,7 @@ import { audioPlayer } from "@/public/scripts/ts/audio_player/audio_player";
 import { waveformPlayer } from "@/public/scripts/ts/audio_player/audio_player";
 import styles from "../page.module.css";
 import "@/public/styles/public_artist_profile.css"
-import { useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { getSound } from "@/public/scripts/ts/soundList";
 import { useEffect, useRef, useState } from "react";
 import { Sound } from "@/public/types/sound";
@@ -12,8 +12,8 @@ import { fetchAudio } from "@/public/scripts/newSoundList";
 import WaveSurfer from "wavesurfer.js";
 
 export default function PublicArtistProfile() {
-    const searchParams = useSearchParams()
-    const soundID = searchParams.get('soundID')
+    const params = useParams()
+    const soundID = params.soundID as string
 
     const [sound, setSound] = useState<Sound | null>(null)
 

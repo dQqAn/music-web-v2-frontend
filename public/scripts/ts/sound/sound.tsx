@@ -81,7 +81,7 @@ export function setSoundInfos(sound: any, soundImageDivID: string, soundNameDivI
 
     if (name) {
         name.innerHTML = `
-        <a href="/sound/?${toSlug(sound.name)}&soundID=${sound.soundID}">
+        <a href="/sound/${sound.soundID}">
                     <h5>${sound.name}</h5>      
                 </a>
          `;
