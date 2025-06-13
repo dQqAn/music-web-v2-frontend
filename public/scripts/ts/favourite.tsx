@@ -1,4 +1,12 @@
 import { activeStatus } from "@/lib/tokenControl";
+import { createRoot, Root } from 'react-dom/client';
+import { Button } from "@/components/ui/button"
+import { Heart, HeartOff } from "lucide-react";
+import { proxy, useSnapshot } from 'valtio';
+
+export const favouriteStore = proxy<{ [soundID: string]: boolean }>({});
+
+let mainMenuFav: Root | null = null;
 
 async function getFavStatus(soundID: string) {
     try {
@@ -19,29 +27,54 @@ async function getFavStatus(soundID: string) {
 
 export async function createFavDiv(favDivID: string, soundID: string, main = false) {
     const isFav = await getFavStatus(soundID);
-    const favText = isFav ? "heart" : "heart-off";
+    const favDiv = document.getElementById(favDivID) as HTMLDivElement;
+    if (!favDiv) return;
 
-    const favID = main ? "main-fav-btn-" + soundID : "fav-btn-" + soundID
-    const favDiv = document.getElementById(favDivID)
-    if (favDiv) {
-        const icon = document.createElement('p');
-        icon.setAttribute('data-lucide', favText);
-        icon.className = `${favID}`;
-        icon.textContent = 'Favourite';
+    if (!mainMenuFav) {
+        mainMenuFav = createRoot(favDiv);
+    }
 
-        const button = document.createElement('button');
-        button.id = favID;
-        button.appendChild(icon);
+    mainMenuFav.render(<FavouriteButton soundID={soundID} initialFav={isFav} />);
 
-        favDiv.innerHTML = ``;
-        favDiv.appendChild(button);
-        const favBtn = document.getElementById(favID)
-        if (favBtn) {
-            favBtn.onclick = () => {
-                changeSoundFavouriteStatus(soundID, favID)
+    //const IconComponent: LucideIcon = isFav ? Heart : HeartOff; 
+}
+
+export function FavouriteButton({ soundID, initialFav }: {
+    soundID: string;
+    initialFav: boolean;
+}) {
+    const snap = useSnapshot(favouriteStore);
+    const favStatus = snap[soundID] ?? initialFav;
+
+    async function handleToggleFavourite() {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/favouriteSound`, {
+                credentials: "include",
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ soundIDs: [soundID] })
+            });
+
+            if (!response.ok) {
+                console.log("Error backend.");
+                return;
             }
+
+            const result = await response.json();
+            const newStatus = result.favouriteStatus;
+            favouriteStore[soundID] = newStatus;
+        } catch (error) {
+            console.error('Error:', error);
         }
     }
+
+    return (
+        <Button variant="secondary" onClick={handleToggleFavourite}>
+            {favStatus ? <Heart /> : <HeartOff />}
+        </Button>
+    );
 }
 
 async function changeSoundFavouriteStatus(soundID: string, favID: string) {
