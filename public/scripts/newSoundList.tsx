@@ -68,7 +68,7 @@ export function SoundListView({ sounds }: { sounds: Sound[] }) {
     }
     clearTempAllSoundIDs()
     return (
-        <div>
+        <div style={{ width: '100%' }}>
             {sounds.map((sound) => (
                 <SoundCard key={sound.id} sound={sound} />
             ))}
@@ -209,8 +209,8 @@ function SoundCard({ sound }: { sound: Sound }) {
         : sound.artistIDs;
 
     return (
-        <div style={{ border: '1px solid gray', padding: '10px', margin: '10px', marginRight: '0px' }}>
-            <div style={{ display: 'flex', gap: '20px' }}>
+        <div style={{ border: '1px solid gray', padding: '10px', width: '100%', marginBottom: '10px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
                 <CustomButton
                     text="Play"
                     onClickAction={() => {
@@ -222,6 +222,7 @@ function SoundCard({ sound }: { sound: Sound }) {
                 <h3>{sound.name}</h3>
                 <div style={{ display: 'flex', gap: '10px' }}>
                     <p id={`time_${sound.soundID}`}>0:00</p>
+                    -
                     <p id={`duration_${sound.soundID}`}>0:00</p>
                 </div>
                 <p>
@@ -246,7 +247,7 @@ function SoundCard({ sound }: { sound: Sound }) {
                     artistArray.map((a: { name: string }) => a.name).join(', ')
                 }</p>
             </div>
-            <div id={`div_${sound.soundID}`} ref={waveContainerRef}></div>
+            <div style={{ width: '100%' }} id={`div_${sound.soundID}`} ref={waveContainerRef}></div>
         </div>
     )
 }
