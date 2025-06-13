@@ -2,6 +2,9 @@ export function updatePagination(divID: string, currentPage: number, totalPages:
     const pagination = document.getElementById(divID);
     if (!pagination) return;
     pagination.innerHTML = '';
+    pagination.style.display = 'flex';
+    pagination.style.gap = '14px';
+    pagination.style.justifyContent = 'center';
 
     if (currentPage > 1) {
         if (forControl) {
@@ -23,7 +26,7 @@ export function updatePagination(divID: string, currentPage: number, totalPages:
             pageLink.textContent = i.toString();
             pageLink.onclick = () => onPageClick(i);
             if (i === currentPage) {
-                pageLink.style.backgroundColor = 'blue';
+                pageLink.style.borderBottom = '2px solid gray';
             }
             pagination.appendChild(pageLink);
         }

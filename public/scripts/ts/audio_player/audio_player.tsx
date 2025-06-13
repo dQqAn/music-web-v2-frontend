@@ -58,8 +58,6 @@ export function waveformPlayer() {
             mainWaveSurfer = null
         }
     }, [])
-
-    return <div id="music_box"></div>
 }
 
 

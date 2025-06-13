@@ -5,6 +5,8 @@ import { waveformPlayer } from "@/public/scripts/ts/audio_player/audio_player";
 import "@/public/styles/artist_single_sound.css"
 import "@/public/scripts/ts/artist_single_sound/artist_single_sound"
 import { artistSingleSound } from "@/public/scripts/ts/artist_single_sound/artist_single_sound";
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 export default function Profile() {
   waveformPlayer()
@@ -23,18 +25,18 @@ export default function Profile() {
           <div className="form-group">
             <label>Select an image</label>
             <span id="selectedImageName"></span>
-            <input required type="file" id="imageInput" name="imageFile" accept=".png, .jpg" />
+            <Input id="imageInput" required type="file" placeholder="imageFile" accept=".png, .jpg"/>
           </div>
 
           <div className="form-group">
             <label>Select a sound</label>
             <span id="selectedSoundName"></span>
-            <input required type="file" id="soundInput" name="soundFile" accept=".mp3, .wav" />
+            <Input id="soundInput" required type="file" placeholder="soundFile" accept=".mp3, .wav"/>
           </div>
 
           <div className="form-group">
-            <label>Sound Name:</label>
-            <input id="soundName" name="soundName" required type="text" />
+            <Label htmlFor="soundName">Sound Name:</Label>
+            <Input id="soundName" required type="text" placeholder="Sound name" />
           </div>
 
           <button type="submit">Upload Sound</button>

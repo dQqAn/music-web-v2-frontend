@@ -209,7 +209,7 @@ function SoundCard({ sound }: { sound: Sound }) {
         : sound.artistIDs;
 
     return (
-        <div style={{ border: '1px solid gray', padding: '10px', marginBottom: '10px' }}>
+        <div style={{ border: '1px solid gray', padding: '10px', margin: '10px', marginRight: '0px' }}>
             <div style={{ display: 'flex', gap: '20px' }}>
                 <CustomButton
                     text="Play"
@@ -220,7 +220,6 @@ function SoundCard({ sound }: { sound: Sound }) {
                     <i data-lucide="play" className={`icon_${sound.soundID}`}>Play</i>
                 </CustomButton>
                 <h3>{sound.name}</h3>
-                <p>Durum: {sound.status}</p>
                 <div style={{ display: 'flex', gap: '10px' }}>
                     <p id={`time_${sound.soundID}`}>0:00</p>
                     <p id={`duration_${sound.soundID}`}>0:00</p>
@@ -230,14 +229,6 @@ function SoundCard({ sound }: { sound: Sound }) {
                         <span key={category}>
                             <a href={`/category/${encodeURIComponent(category)}__category`}>{category}</a>
                             {index < sound.categories.length - 1 && ', '}
-                        </span>
-                    ))}
-                </p>
-                <p>
-                    Modlar: {sound.moods.map((mood, index) => (
-                        <span key={mood}>
-                            <a href={`/category/${encodeURIComponent(mood)}__mood`}>{mood}</a>
-                            {index < sound.moods.length - 1 && ', '}
                         </span>
                     ))}
                 </p>

@@ -4,6 +4,8 @@ import styles from "./page.module.css";
 import { useUIInteractions } from '../public/scripts/ts/menu/menu';
 import { audioPlayer, waveformPlayer } from '@/public/scripts/ts/audio_player/audio_player';
 import { SoundList } from '@/public/scripts/newSoundList';
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Input } from "@/components/ui/input"
 
 export default function Home() {
   useUIInteractions()
@@ -16,12 +18,7 @@ export default function Home() {
         <div id="menuWrapper" className={styles.menuWrapper}>
           <div className={styles.section}>
             <div style={{ marginBottom: 16 }}>
-              <input
-                id="categorySearchInput"
-                type="text"
-                placeholder="Search..."
-                className={styles.searchInput}
-              />
+              <Input id="categorySearchInput" type="text" placeholder="Search..." className={styles.searchInput} />
             </div>
 
             <div className={styles.titleBar}>
@@ -30,15 +27,17 @@ export default function Home() {
             </div>
           </div>
 
-          <div id="menuContainer" className={`${styles.section} ${styles.menuContainer}`}>
-            <div id="selectedItemsContainer" className={styles.selectedItemsContainer}></div>
+          <ScrollArea className="h-72 w-48 rounded-md border">
+            <div id="menuContainer" className={`${styles.section} ${styles.menuContainer}`}>
+              <div id="selectedItemsContainer" className={styles.selectedItemsContainer}></div>
 
-            <div id="categoryBackButtonContainer" className={styles.backButtonContainer}>
-              <button id="categoryBackButton" style={{ fontSize: '0.875rem' }}>← Back</button>
+              <div id="categoryBackButtonContainer" className={styles.backButtonContainer} style={{ display: 'none' }}>
+                <button id="categoryBackButton" style={{ fontSize: '0.875rem' }}>← Back</button>
+              </div>
+
+              <div id="categoryMenuContainer" className={styles.categoryMenuContainer}></div>
             </div>
-
-            <div id="categoryMenuContainer" className={styles.categoryMenuContainer}></div>
-          </div>
+          </ScrollArea>
 
           <div id="menuSubmitDiv">
             <button id="menuSubmitButton" className={styles.submitButton}>

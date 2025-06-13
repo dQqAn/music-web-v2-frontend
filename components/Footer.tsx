@@ -1,6 +1,7 @@
 'use client';
 
 import styles from '@/public/styles/footer.module.css'
+import { Input } from "@/components/ui/input"
 
 export default function Footer() {
   return (
@@ -152,7 +153,7 @@ export default function Footer() {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div >
                       <button id="mainCreatePlaylist">Create Playlist</button>
-                      <input type="text" id="mainPlaylistInput" placeholder="Search"></input>
+                      <Input id="mainPlaylistInput" type="text" placeholder="Search" />
 
                     </div>
                     <div >

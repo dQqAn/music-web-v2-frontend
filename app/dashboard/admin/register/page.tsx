@@ -7,6 +7,8 @@ import { waveformPlayer } from "@/public/scripts/ts/audio_player/audio_player"
 import styles from "../../../page.module.css"
 import "@/public/styles/admin_register.css";
 import { useAdminRegister } from '@/public/scripts/ts/admin_register/admin_register'
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 export default function Register() {
     const [isLoading, setIsLoading] = useState(true)
@@ -45,8 +47,8 @@ export default function Register() {
     return (
         <div className={styles.page}>
             <form id="staffForm">
-                <label htmlFor="mail">Staff Email:</label>
-                <input id="mail" name="mail" required type="email" />
+                <Label htmlFor="mail">Staff Email:</Label>
+                <Input id="mail" required type="email" placeholder="Email" />
 
                 <p>Select Role:</p>
                 <label>

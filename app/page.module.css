@@ -7,7 +7,7 @@
   --button-secondary-hover: #f2f2f2;
 
   align-items: center;
-  justify-items: center; 
+  justify-items: center;
   padding: 10px;
   gap: 10px;
   font-family: var(--font-geist-sans);
@@ -68,15 +68,15 @@
 
 .section {
   width: 100%;
-  max-width: 400px;
   margin: 0 auto;
-  padding: 16px;
+  padding: 8px;
 }
 
 .searchInput {
   width: 100%;
   padding: 8px;
   border-radius: 4px;
+  border-color: #1a1a1a;
 }
 
 .titleBar {
@@ -87,12 +87,10 @@
 }
 
 .menuContainer {
-  overflow-y: auto;
   height: 320px;
 }
 
 .categoryMenuContainer {
-  padding: 16px;
   border-radius: 4px;
 }
 
@@ -100,6 +98,8 @@
   padding: 8px;
   width: 100%;
   margin-top: 16px;
+  border: 1px solid #1a1a1a;
+  border-radius: 4px;
 }
 
 .selectedItemsContainer {
@@ -115,6 +115,7 @@
 
 .toggleInstruments {
   padding: 8px 16px;
+  border: 1px solid #1a1a1a;
   border-radius: 4px;
   justify-content: center;
 }
@@ -137,4 +138,3 @@
   text-align: center;
   margin-bottom: 160px;
 }
-

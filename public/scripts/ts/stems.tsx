@@ -97,25 +97,25 @@ async function stemsContent(stemsOverlayContent: any, stems: any, soundID: strin
     let mainStemWaveReady = false;
 
     const mainStemItem = document.createElement('div');
-    mainStemItem.style.display = 'flex';
+    //mainStemItem.style.display = 'flex';
     mainStemItem.style.width = '100%';
 
     const mainInfos = document.createElement('div')
     mainInfos.style.color = 'black';
+    mainInfos.style.display = 'flex';
+    mainInfos.style.justifyContent = 'space-between';
     mainInfos.innerHTML = `
-                    <div>
-                        <div style="width: 12px; height: 12px;">
+                    <div style="width: 12px; height: 12px;">
                             <img id="stemSoundImage_${soundID}" src=""
                                   alt="">
-                        </div>
                     </div>
     
-                    <div style="width: 100%;">
+                    <div style="width: 100%; display:flex;">
                         <h5>Name: </h5>
                         <div id="stemSoundName_${soundID}"></div>
                     </div>
     
-                    <div style="width: 100%;">
+                    <div style="width: 100%; display:flex;">
                         <h5>Artists: </h5>
                         <div id="stemSoundArtistNames_${soundID}"></div>
                     </div>
@@ -131,6 +131,7 @@ async function stemsContent(stemsOverlayContent: any, stems: any, soundID: strin
     const mainStemWaveSurferDiv = document.createElement('div');
     mainStemWaveSurferDiv.style.border = "1px solid #ddd";
     mainStemWaveSurferDiv.style.width = '100%';
+    mainStemWaveSurferDiv.style.height = '50px';
 
     mainStemItem.appendChild(mainStemWaveSurferDiv)
     stemsOverlayContent.appendChild(mainStemItem)
@@ -156,6 +157,10 @@ async function stemsContent(stemsOverlayContent: any, stems: any, soundID: strin
 
     const mainStemPlayButton = document.createElement('button')
     mainStemPlayButton.textContent = "Play"
+    mainStemPlayButton.style.width = '100%';
+    mainStemPlayButton.style.border = '1px solid #1a1a1a';
+    mainStemPlayButton.style.display = 'flex';
+    mainStemPlayButton.style.justifyContent = 'center';
 
     const mainControllerDiv = document.createElement('div')
 
@@ -394,6 +399,8 @@ async function stemsContent(stemsOverlayContent: any, stems: any, soundID: strin
                 `;
 
         const controllerDiv = document.createElement('div')
+        controllerDiv.style.display = 'flex';
+        controllerDiv.style.justifyContent = 'space-between';
         controllerDiv.appendChild(infos)
         controllerDiv.appendChild(downloadButton)
         controllerDiv.appendChild(muteLabel)

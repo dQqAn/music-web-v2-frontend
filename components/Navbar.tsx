@@ -5,6 +5,7 @@ import CustomButton from './button/CustomButton';
 import styles from '@/public/styles/navbar.module.css'
 import UserSection from './UserSection';
 import { headerContent } from '@/public/scripts/ts/header';
+import { Input } from "@/components/ui/input"
 
 export default function Navbar() {
   const router = useRouter()
@@ -18,11 +19,7 @@ export default function Navbar() {
     <nav className={styles.nav}>
       <div className={styles.wrapper}>
         <div>
-          <input
-            type="text"
-            id="searchInput"
-            placeholder="Search sound..."
-          />
+          <Input id="searchInput" type="text" placeholder="Search sound..." />
           <div id="searchResults"></div>
         </div>
 
