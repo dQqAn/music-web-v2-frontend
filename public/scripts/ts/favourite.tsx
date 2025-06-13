@@ -48,23 +48,25 @@ export function FavouriteButton({ soundID, initialFav }: {
 
     async function handleToggleFavourite() {
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/favouriteSound`, {
-                credentials: "include",
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ soundIDs: [soundID] })
-            });
+            if (activeStatus === true) {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/favouriteSound`, {
+                    credentials: "include",
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ soundIDs: [soundID] })
+                });
 
-            if (!response.ok) {
-                console.log("Error backend.");
-                return;
+                if (!response.ok) {
+                    console.log("Error backend.");
+                    return;
+                }
+
+                const result = await response.json();
+                const newStatus = result.favouriteStatus;
+                favouriteStore[soundID] = newStatus;
             }
-
-            const result = await response.json();
-            const newStatus = result.favouriteStatus;
-            favouriteStore[soundID] = newStatus;
         } catch (error) {
             console.error('Error:', error);
         }
