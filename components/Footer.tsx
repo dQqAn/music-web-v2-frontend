@@ -116,7 +116,7 @@ export default function Footer() {
 
             <div id="mainFavDiv"></div>
 
-            <div id="mainStretchDiv"></div>
+            <div id="mainMenu"></div>
 
             <div id="mainPlaylistDiv">
               <button id="mainPlaylistBtn">Playlist</button>

@@ -1,6 +1,15 @@
 import WaveSurfer from 'wavesurfer.js'
 import { stretchAudio } from '@/lib/stretchAudio'
 import { Sound } from '@/public/types/sound';
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuLabel,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export const soundListWaveSurfers: { [key: string]: WaveSurfer } = {};
 
@@ -351,5 +360,29 @@ export function createListMenu(sound: any) {
     return wrapper;
 }
 
+export function mainMenu(sound: Sound) {
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="secondary">Menu</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56" align="start">
+                <DropdownMenuLabel>Stretch a sound</DropdownMenuLabel>
+                <DropdownMenuGroup>
+                    <div>
+                        <Input id={`mainMenu_${sound.soundID}`} type="number" placeholder="Duration" />
+                        <Button variant="secondary" onClick={() => mainMenuStretchSound(sound)}>Submit</Button>
+                    </div>
+                </DropdownMenuGroup>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    )
+}
 
+async function mainMenuStretchSound(sound: Sound) {
+    const input = document.getElementById(`mainMenu_${sound.soundID}`) as HTMLInputElement;
+    const duration = input.value === '' ? 10 : parseFloat(input.value);
+
+    await downloadStretchedSound(sound.soundID, false, "", true, duration)
+}
 

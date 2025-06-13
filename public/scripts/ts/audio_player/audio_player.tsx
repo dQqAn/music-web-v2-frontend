@@ -2,7 +2,7 @@ import WaveSurfer from 'wavesurfer.js'
 import HoverPlugin from 'wavesurfer.js/dist/plugins/hover'
 import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions'
 import {
-    createListMenu,
+    mainMenu,
     downloadSound,
     getSound,
     getStoredSoundIDs,
@@ -20,6 +20,7 @@ import { setSoundInfos } from '../sound/sound'
 import { createStemsContent } from '../stems'
 import { useEffect } from 'react'
 import { fetchAudio } from '../../newSoundList'
+import { createRoot } from 'react-dom/client';
 
 export let mainWaveSurfer: WaveSurfer | null = null;
 
@@ -309,9 +310,10 @@ export function audioPlayer() {
                     downloadSound(sound.soundID)
                 }
 
-                const mainStretchDiv = document.getElementById('mainStretchDiv') as HTMLElement;
-                mainStretchDiv.innerHTML = ``;
-                mainStretchDiv.appendChild(createListMenu(sound))
+                const mainMenuElement = document.getElementById('mainMenu') as HTMLElement;
+                mainMenuElement.innerHTML = ``;
+                const root = createRoot(mainMenuElement);
+                root.render(mainMenu(sound));
             } else {
                 soundOptionsToUser.style.display = 'none';
             }
