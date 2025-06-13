@@ -20,11 +20,13 @@ import { setSoundInfos } from '../sound/sound'
 import { createStemsContent } from '../stems'
 import { useEffect } from 'react'
 import { fetchAudio } from '../../newSoundList'
-import { createRoot } from 'react-dom/client';
+import { createRoot, Root } from 'react-dom/client';
 
 export let mainWaveSurfer: WaveSurfer | null = null;
 
 let regionsPlugin: RegionsPlugin | null = null
+
+let mainMenuRoot: Root | null = null;
 
 export function waveformPlayer() {
     useEffect(() => {
@@ -311,9 +313,10 @@ export function audioPlayer() {
                 }
 
                 const mainMenuElement = document.getElementById('mainMenu') as HTMLElement;
-                mainMenuElement.innerHTML = ``;
-                const root = createRoot(mainMenuElement);
-                root.render(mainMenu(sound));
+                if (!mainMenuRoot) {
+                    mainMenuRoot = createRoot(mainMenuElement);
+                }
+                mainMenuRoot.render(mainMenu(sound));
             } else {
                 soundOptionsToUser.style.display = 'none';
             }
