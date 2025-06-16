@@ -73,7 +73,7 @@ export function FavouriteButton({ soundID, initialFav }: {
     }
 
     return (
-        <Button variant="secondary" onClick={handleToggleFavourite}>
+        <Button variant="ghost" onClick={handleToggleFavourite}>
             {favStatus ? <Heart /> : <HeartOff />}
         </Button>
     );

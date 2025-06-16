@@ -21,21 +21,21 @@ export default function Footer() {
           </div>
 
           <div style={{ display: 'flex', gap: 16 }}>
-            <Button variant="secondary" id="musicBoxSkipBack">Back</Button>
+            <Button variant="ghost" id="musicBoxSkipBack">Back</Button>
 
-            <Button variant="secondary" id="musicBoxPlayPause">Play</Button>
+            <Button variant="ghost" id="musicBoxPlayPause">Play</Button>
 
-            <Button variant="secondary" id="musicBoxSkipForward">Forward</Button>
+            <Button variant="ghost" id="musicBoxSkipForward">Forward</Button>
 
-            <Button variant="secondary" id="musicBoxRepeat">Repeat</Button>
+            <Button variant="ghost" id="musicBoxRepeat">Repeat</Button>
 
-            <Button variant="secondary" id="openStemsOverlay">Stems</Button>
+            <Button variant="ghost" id="openStemsOverlay">Stems</Button>
           </div>
 
         </div>
 
         <div className={styles.footerCenter}>
-          <div id="music_box" style={{ position: 'relative' }}>
+          <div id="music_box" style={{ maxWidth: '800px', width: '100%' }}>
             <div >
               <div style={{ display: 'flex', gap: 16 }}>
                 <div style={{ display: 'flex', gap: 4 }}>
@@ -58,19 +58,19 @@ export default function Footer() {
                   <input id="mainLoopCheckbox" type="checkbox" />
                   Loop Regions
                 </label>
-                <Button variant="secondary" id="mainClearRegions">Clear Regions</Button>
+                <Button variant="ghost" id="mainClearRegions">Clear Regions</Button>
               </div>
-              <div id="mainHover"></div>
+              <div id="mainHover" style={{ maxWidth: '800px' }}></div>
             </div>
           </div>
         </div>
 
         <div className={styles.footerEnd}>
           <div id="soundOptionsToUser" style={{ display: 'flex', gap: 16 }}>
-            <Button variant="secondary" id="mainDownloadButton">D</Button>
+            <Button variant="ghost" id="mainDownloadButton">D</Button>
 
             <div>
-              <Button variant="secondary" id="openPlaylistButton">Queue</Button>
+              <Button variant="ghost" id="openPlaylistButton">Queue</Button>
 
               <div id='mainQueueOverlay' style={{
                 display: 'none',
@@ -97,7 +97,7 @@ export default function Footer() {
                     backgroundColor: '#f5d0fe',
                     color: '#0a0a0a',
                   }}>
-                    <Button variant="secondary" id="closePlaylistOverlay"
+                    <Button variant="ghost" id="closePlaylistOverlay"
                       style={{
                         position: 'absolute',
                         top: '0.75rem',
@@ -119,7 +119,7 @@ export default function Footer() {
             <div id="mainMenu"></div>
 
             <div id="mainPlaylistDiv">
-              <Button variant="secondary" id="mainPlaylistBtn">Playlist</Button>
+              <Button variant="ghost" id="mainPlaylistBtn">Playlist</Button>
 
               <div id='mainPlaylistOverlay' style={{
                 display: 'none',
@@ -152,17 +152,17 @@ export default function Footer() {
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div >
-                      <Button variant="secondary" id="mainCreatePlaylist">Create Playlist</Button>
+                      <Button variant="ghost" id="mainCreatePlaylist">Create Playlist</Button>
                       <Input id="mainPlaylistInput" type="text" placeholder="Search" />
 
                     </div>
                     <div >
-                      <Button variant="secondary" id="mainPlaylistCloseBtn">X</Button>
+                      <Button variant="ghost" id="mainPlaylistCloseBtn">X</Button>
                     </div>
                   </div>
 
                   <div id="mainPlaylistResult" style={{ maxHeight: '100px', overflowY: 'auto' }}></div>
-                  <Button variant="secondary" id="mainAddToPlaylistBtn" style={{ width: '100%' }}>Submit</Button>
+                  <Button variant="ghost" id="mainAddToPlaylistBtn" style={{ width: '100%' }}>Submit</Button>
                 </div>
 
               </div>

@@ -364,7 +364,7 @@ export function mainMenu(sound: Sound) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="secondary">Menu</Button>
+                <Button variant="ghost">Menu</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="start">
                 <DropdownMenuLabel>Stretch a sound</DropdownMenuLabel>

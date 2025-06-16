@@ -22,7 +22,7 @@ export function AppSidebar() {
                         </div>
                     </div>
 
-                    <ScrollArea className="h-72 w-48 rounded-md border">
+                    <ScrollArea className="h-72 rounded-md border">
                         <div id="menuContainer" className={`${styles.section} ${styles.menuContainer}`}>
                             <div id="selectedItemsContainer" className={styles.selectedItemsContainer}></div>
 
@@ -36,7 +36,7 @@ export function AppSidebar() {
 
                     <div id="menuSubmitDiv">
                         <button id="menuSubmitButton" className={styles.submitButton}>
-                            Show Selected Tags
+                            Filter List
                         </button>
                     </div>
 
