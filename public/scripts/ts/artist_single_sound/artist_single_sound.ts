@@ -121,7 +121,7 @@ function formSubmit() {
                 if (['wav', 'mp3'].includes(soundExt)) {
                     const soundBaseName = path.parse(soundFile.name).name;
                     const supabasePath = `sound/${userID}/${soundUuid}_${soundBaseName}.${soundExt}`;
- 
+
                     const contentType = getContentType(soundFile)
                     await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/uploads/${supabasePath}`, {
                         method: 'POST',
@@ -140,48 +140,58 @@ function formSubmit() {
         //todo image and sound input
         for (const entry of stemEntries) {
             const file = entry.files[0];
-            const buffer = Buffer.from(await file.arrayBuffer());
-            const newFile = new File([buffer], "audio.wav", { type: file.type });
+            //const buffer = Buffer.from(await file.arrayBuffer());
+            //const newFile = new File([buffer], "audio.wav", { type: file.type });
+            let stretchedFile: File | null = null;
 
-            let newDuration = await getAudioDurationInSeconds(newFile);
+            let newDuration = await getAudioDurationInSeconds(file);
             newDuration = newDuration === -1 ? 0 : newDuration;
 
-            let newBuffer: Buffer<ArrayBuffer> | null
+            //let newBuffer: Buffer<ArrayBuffer> | null
 
             if (duration !== 0 && duration === newDuration) {
-                newBuffer = buffer
+                //newBuffer = buffer
+                stretchedFile = file;
             } else {
                 try {
-                    const stretched = await stretchAudio(newFile, duration);
-                    newBuffer = Buffer.from(await stretched.arrayBuffer());
+                    const stretched = await stretchAudio(file, duration);
+                    //newBuffer = Buffer.from(await stretched.arrayBuffer());
+                    stretchedFile = stretched;
                 } catch (err) {
                     console.error("Stretch failed, using original buffer:", err);
-                    newBuffer = buffer;
+                    //newBuffer = buffer;
+                    stretchedFile = file;
                 }
             }
 
-            const ft = await fileTypeFromBuffer(buffer);
-            const ext = ft?.ext || path.extname(newFile.name).slice(1).toLowerCase();
-            const baseName = path.parse(newFile.name).name;
+            if (!stretchedFile) {
+                console.error("Stretched file is null");
+                continue;
+            }
+
+            const newBuffer = Buffer.from(await stretchedFile.arrayBuffer());
+            const ft = await fileTypeFromBuffer(newBuffer);
+            const ext = ft?.ext || path.extname(stretchedFile.name).slice(1).toLowerCase();
+            const baseName = path.parse(stretchedFile.name).name;
             const uuid = uuidv4();
 
             if (['wav', 'mp3'].includes(ext)) {
                 if (process.env.NODE_ENV === 'development') {
                     const target = path.join(stemDir, `${uuid}_${baseName}.${ext}`);
-                    await sendLocalFileRaw(file, target);
+                    await sendLocalFileRaw(stretchedFile, target);
                     formData.append("stemNames[]", entry.name);
                     formData.append("stemPaths[]", target);
                 } else {
                     const supabasePath = `stem/${soundID}/${uuid}_${baseName}.${ext}`;
 
-                    const contentType = getContentType(newFile)
+                    const contentType = getContentType(stretchedFile)
                     await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/uploads/${supabasePath}`, {
                         method: 'POST',
                         headers: {
                             'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
                             'Content-Type': contentType,
                         },
-                        body: newFile,
+                        body: stretchedFile,
                     });
 
                     formData.append("stemNames[]", entry.name);

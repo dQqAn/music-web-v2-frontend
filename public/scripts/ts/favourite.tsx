@@ -39,7 +39,7 @@ export async function createFavDiv(favDivID: string, soundID: string, main = fal
     //const IconComponent: LucideIcon = isFav ? Heart : HeartOff; 
 }
 
-export function FavouriteButton({ soundID, initialFav }: {
+function FavouriteButton({ soundID, initialFav }: {
     soundID: string;
     initialFav: boolean;
 }) {
