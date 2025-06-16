@@ -44,13 +44,13 @@ export function useUIInteractions() {
         hasDurationProgressiveBar
       )
 
-      dropDownMenu(
+      /*dropDownMenu(
         1,
         'toggleInstruments',
         'instrumentDropdown',
         'instrumentList',
         'instruments'
-      )
+      )*/
 
       //menuSubmit('menuSubmitDiv')
     }
@@ -70,7 +70,60 @@ interface CategoryItem {
   source: string;
 }
 
-function dropDownMenu(page = 1, toggleBtnID: string, dropdownID: string, listID: string, dataName: string) {
+export function newDropDownMenu(page = 1, dataName: string,
+  toggleInstrumentsButtonRef: HTMLButtonElement,
+  instrumentDropdownRef: HTMLDivElement,
+  instrumentListnRef: HTMLDivElement
+) {
+  fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/allMetaData?page=${page}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Menu loading error');
+      }
+      return response.json();
+    })
+    .then(data => {
+      const items = data[dataName]
+      if (items) {
+
+        toggleInstrumentsButtonRef.addEventListener('click', () => {
+          const isHidden = getComputedStyle(instrumentDropdownRef).display === 'none';
+          instrumentDropdownRef.style.display = isHidden ? 'block' : 'none';
+        });
+
+        items.forEach((item: CategoryItem, index: number) => {
+          const label = document.createElement('label');
+
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.dataset.tag = item.tag;
+
+          const sourceItem = {
+            tag: item.tag,
+            name: item.name,
+            source: 'instrument'
+          }
+          checkbox.addEventListener('change', (e) => {
+            const target = e.target as HTMLInputElement;
+            const isChecked = target.checked;
+
+            if (isChecked) {
+              categorySelectedItems.add(sourceItem)
+            } else {
+              deleteItemByTag(item.tag, categorySelectedItems)
+            }
+            updateSelectedItems('selectedItemsContainer', categorySelectedItems);
+          });
+
+          label.appendChild(checkbox);
+          label.appendChild(document.createTextNode(item.name));
+          instrumentListnRef?.appendChild(label);
+        });
+      }
+    })
+}
+
+/*function dropDownMenu(page = 1, toggleBtnID: string, dropdownID: string, listID: string, dataName: string) {
   fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/allMetaData?page=${page}`)
     .then(response => {
       if (!response.ok) {
@@ -123,7 +176,7 @@ function dropDownMenu(page = 1, toggleBtnID: string, dropdownID: string, listID:
         });
       }
     })
-}
+}*/
 
 function loadMenuItems(clearButtonName: string, rootItems: any[], items: any[], menuContainerID: string, selectedItems: Set<any>, navigationStack: any[], currentItems: any[], metaDataName: string, dataName: string, selectedItemsContainer: string, backButtonID: string, page: number, hasDurationProgressiveBar: boolean) {
   fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/allMetaData?page=${page}`)
@@ -466,7 +519,7 @@ export function filterMenu(searchInput: string, menuContainerID: string) {
   });
 }
 
-function openCloseButtons(menuWrapperID: string) {
+/*function openCloseButtons(menuWrapperID: string) {
   const menuWrapper = document.getElementById(menuWrapperID) as HTMLElement;
   const openMenuButton = document.createElement('button');
   openMenuButton.textContent = 'Open';
@@ -489,7 +542,7 @@ function openCloseButtons(menuWrapperID: string) {
     openMenuButton.style.display = 'block';
     closeMenuButton.style.display = 'none';
   });
-}
+}*/
 
 /*function menuSubmit(menuSubmitBtnID: string) {
   const submitButton = document.getElementById(menuSubmitBtnID);
