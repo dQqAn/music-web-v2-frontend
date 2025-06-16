@@ -366,7 +366,7 @@ export function mainMenu(sound: Sound) {
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost">Menu</Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="start">
+            <DropdownMenuContent className="w-56" align="start" style={{ zIndex: 9999 }}>
                 <DropdownMenuLabel>Stretch a sound</DropdownMenuLabel>
                 <DropdownMenuGroup>
                     <div>

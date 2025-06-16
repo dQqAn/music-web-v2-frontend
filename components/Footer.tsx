@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 
 export default function Footer() {
   return (
-    <footer className={styles.footer} style={{ position: 'fixed', bottom: 0, width: '100%', zIndex: 9999 }}>
+    <footer className={styles.footer} style={{ position: 'fixed', bottom: 0, width: '100%', zIndex: 1000 }}>
       <div className={styles.wrapper}>
 
         <div className={styles.footerStart}>
