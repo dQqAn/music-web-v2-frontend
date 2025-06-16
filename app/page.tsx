@@ -16,7 +16,7 @@ export default function Home() {
     <div className={styles.page}>
       <div style={{ display: 'flex', width: '100%' }}>
 
-        <SidebarProvider>
+        <SidebarProvider style={{ zIndex: 10 }}>
           <AppSidebar />
           <SidebarTrigger />
 

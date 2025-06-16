@@ -26,7 +26,7 @@ export default function Navbar() {
   headerContent()
 
   return (
-    <nav className={styles.nav}>
+    <nav className={styles.nav} style={{ zIndex: 9999 }}>
       <div className={styles.wrapper}>
         <div>
           <Input id="searchInput" type="text" placeholder="Search sound..." />

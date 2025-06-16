@@ -1,15 +1,14 @@
 .nav {
-    background-color: #333;
-    padding: 12px 24px;
-    border-radius: 6px;
-    width: 100%;
-  }
-  
-  .wrapper {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-  }
-  
+  background-color: #333;
+  padding: 12px 24px;
+  border-radius: 6px;
+  width: 100%;
+}
+
+.wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
