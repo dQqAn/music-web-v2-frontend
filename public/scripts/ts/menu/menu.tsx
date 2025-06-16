@@ -1,4 +1,6 @@
-import { useEffect } from 'react';
+'use client'
+
+import { useEffect, useState } from "react";
 
 export function useUIInteractions() {
   useEffect(() => {
@@ -70,57 +72,70 @@ interface CategoryItem {
   source: string;
 }
 
-export function newDropDownMenu(page = 1, dataName: string,
-  toggleInstrumentsButtonRef: HTMLButtonElement,
-  instrumentDropdownRef: HTMLDivElement,
-  instrumentListnRef: HTMLDivElement
-) {
-  fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/allMetaData?page=${page}`)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Menu loading error');
-      }
-      return response.json();
-    })
-    .then(data => {
-      const items = data[dataName]
-      if (items) {
+export function DropDownMenu({ dataName }: { dataName: string }) {
+  const [items, setItems] = useState<CategoryItem[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
 
-        toggleInstrumentsButtonRef.addEventListener('click', () => {
-          const isHidden = getComputedStyle(instrumentDropdownRef).display === 'none';
-          instrumentDropdownRef.style.display = isHidden ? 'block' : 'none';
-        });
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/database/allMetaData?page=1`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Menu loading error');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data[dataName]) {
+          setItems(data[dataName]);
+        }
+      });
+  }, [dataName]);
 
-        items.forEach((item: CategoryItem, index: number) => {
-          const label = document.createElement('label');
+  const handleCheckboxChange = (item: CategoryItem, isChecked: boolean) => {
+    const sourceItem = {
+      tag: item.tag,
+      name: item.name,
+      source: 'instrument'
+    };
 
-          const checkbox = document.createElement('input');
-          checkbox.type = 'checkbox';
-          checkbox.dataset.tag = item.tag;
+    if (isChecked) {
+      categorySelectedItems.add(sourceItem);
+    } else {
+      deleteItemByTag(item.tag, categorySelectedItems);
+    }
 
-          const sourceItem = {
-            tag: item.tag,
-            name: item.name,
-            source: 'instrument'
-          }
-          checkbox.addEventListener('change', (e) => {
-            const target = e.target as HTMLInputElement;
-            const isChecked = target.checked;
+    updateSelectedItems('selectedItemsContainer', categorySelectedItems);
+  };
 
-            if (isChecked) {
-              categorySelectedItems.add(sourceItem)
-            } else {
-              deleteItemByTag(item.tag, categorySelectedItems)
-            }
-            updateSelectedItems('selectedItemsContainer', categorySelectedItems);
-          });
+  return (
+    <div style={{
+      marginBottom: '8px',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection: 'column',
+      gap: '4px'
+    }}>
+      <button onClick={() => setIsOpen(prev => !prev)} style={{ border: '1px solid #1a1a1a', padding: '4px' }}>
+        Instruments
+      </button>
 
-          label.appendChild(checkbox);
-          label.appendChild(document.createTextNode(item.name));
-          instrumentListnRef?.appendChild(label);
-        });
-      }
-    })
+      {isOpen && (
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px', border: '1px solid #1a1a1a' }}>
+          {items.map((item, index) => (
+            <label key={index} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <input
+                type="checkbox"
+                data-tag={item.tag}
+                onChange={(e) => handleCheckboxChange(item, e.target.checked)}
+              />
+              {item.name}
+            </label>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
 
 /*function dropDownMenu(page = 1, toggleBtnID: string, dropdownID: string, listID: string, dataName: string) {
