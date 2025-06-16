@@ -46,7 +46,7 @@ export default function ModeratorPendingApproval() {
 
     return (
         <div className="page">
-            <div style={{ color: 'black' }} id="tableOptions">
+            <div style={{ }} id="tableOptions">
                 <table >
                     <thead>
                         <tr>

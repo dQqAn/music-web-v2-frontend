@@ -95,7 +95,6 @@ export default function Footer() {
                     padding: '1.5rem',
                     zIndex: 60,
                     backgroundColor: '#f5d0fe',
-                    color: '#0a0a0a',
                   }}>
                     <Button variant="ghost" id="closePlaylistOverlay"
                       style={{

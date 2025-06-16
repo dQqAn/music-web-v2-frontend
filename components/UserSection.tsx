@@ -12,11 +12,11 @@ export default function UserSection() {
   }, []);
 
   if (loggedIn === null) return null;         
-  if (loggedIn) return <Link href={`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/dashboard`}>Dashboard</Link>;
+  if (loggedIn) return <Link style={{ color: 'white' }} href={`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/dashboard`}>Dashboard</Link>;
 
   const redirect = encodeURIComponent(window.location.href);
   return (
-    <Link href={`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/start-login?redirectUrl=${redirect}`}>
+    <Link style={{ color: 'white' }} href={`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/start-login?redirectUrl=${redirect}`}>
       Login
     </Link>
   );

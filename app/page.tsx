@@ -21,7 +21,7 @@ export default function Home() {
           <SidebarTrigger />
 
           <div style={{ width: '100%' }}>
-            <div style={{ width: '100%' }}>
+            <div style={{ width: '100%', marginBottom: '16px' }}>
               <button id="toggleInstruments" className={styles.toggleInstruments} style={{ display: 'block', margin: '0 auto' }}>
                 Instruments
               </button>
