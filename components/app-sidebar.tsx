@@ -5,8 +5,16 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Input } from "@/components/ui/input"
 import styles from "../app/page.module.css";
+import { useRef } from "react";
 
 export function AppSidebar() {
+
+    const menuSubmitRef = useRef<HTMLDivElement | null>(null);
+
+    const filterList = () => {
+        window.dispatchEvent(new Event('refreshSounds'))
+    }
+
     return (
         <Sidebar >
             <SidebarContent>
@@ -34,8 +42,8 @@ export function AppSidebar() {
                         </div>
                     </ScrollArea>
 
-                    <div id="menuSubmitDiv">
-                        <button id="menuSubmitButton" className={styles.submitButton}>
+                    <div id="menuSubmitDiv" ref={menuSubmitRef}>
+                        <button id="menuSubmitButton" className={styles.submitButton} onClick={filterList}>
                             Filter List
                         </button>
                     </div>

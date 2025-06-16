@@ -52,7 +52,7 @@ export function useUIInteractions() {
         'instruments'
       )
 
-      menuSubmit('menuSubmitDiv')
+      //menuSubmit('menuSubmitDiv')
     }
 
     // clean up (opsiyonel)
@@ -491,10 +491,10 @@ function openCloseButtons(menuWrapperID: string) {
   });
 }
 
-function menuSubmit(menuSubmitBtnID: string) {
+/*function menuSubmit(menuSubmitBtnID: string) {
   const submitButton = document.getElementById(menuSubmitBtnID);
   submitButton?.addEventListener('click', async function () {
     //filterSounds(1)
     window.dispatchEvent(new Event('refreshSounds'))
   });
-}
+}*/
