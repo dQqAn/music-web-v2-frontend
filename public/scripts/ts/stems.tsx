@@ -16,6 +16,7 @@ export function createStemsContent(soundID: string) {
     const modal = document.createElement("div");
     modal.style.position = 'fixed';
     modal.style.zIndex = '50';
+    modal.style.color = 'black';
     Object.assign(modal.style, {
         top: "50%",
         left: "50%",
